@@ -3,7 +3,7 @@ import { routeNames } from '../config'
 
 export function PrivateRoute({ children }) {
   const { pathname } = useLocation()
-  const token = null
+  const token = 1
 
   return token ? (
     <>{children}</>

@@ -4,7 +4,8 @@ import { DashboardOutlined } from '@ant-design/icons'
 const { Sider } = Layout
 import { useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-// import LOGO from '../../../assets/images/logo.svg'
+import LOGO from '../../../assets/icons/icons8-avocado-94.png'
+import MainUser from '../MainUser/MainUserProfile'
 
 const menuItems = [
   {
@@ -19,6 +20,7 @@ const MainSidebar = () => {
     <Sider breakpoint='lg' collapsedWidth='0' className='container-sider'>
       <Logo />
       <MenuSidebar />
+      <MainUser />
     </Sider>
   )
 }
@@ -26,7 +28,7 @@ const MainSidebar = () => {
 const Logo = () => {
   return (
     <Link to={'/'} className='container-logo'>
-      {/* <img src={LOGO} alt='logo-img' /> */}
+      <img src={LOGO} alt='logo-icon' />
     </Link>
   )
 }
