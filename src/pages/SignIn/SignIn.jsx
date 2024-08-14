@@ -1,7 +1,12 @@
-import React from 'react'
+import "./styles.scss";
+import React from "react";
 
 const SignIn = () => {
-  return <div>SignIn</div>
-}
+  return (
+    <div className="card">
+      <button>Sign in with Google</button>
+    </div>
+  );
+};
 
-export default SignIn
+export default SignIn;

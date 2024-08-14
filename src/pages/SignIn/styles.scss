@@ -1,0 +1,26 @@
+$primary-color: #407f3e;
+// $second-color:
+// $third
+body {
+  display: flex;
+  height: 100dvh;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  color: $primary-color;
+  font-size: 2em;
+  margin: auto;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  height: 700px;
+  width: 700px;
+  border-radius: 20px;
+  background-color: $primary-color;
+}
