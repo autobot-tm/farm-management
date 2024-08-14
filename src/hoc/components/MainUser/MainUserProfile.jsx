@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import './styles.scss'
+import { routeNames } from '../../../config'
 // import { useDispatch, useSelector } from 'react-redux'
 // import { useAuthSlice } from '../../../store/slices/auth.slice.js'
 // const { Header } = Layout
@@ -48,17 +49,12 @@ const MainUser = () => {
         {
           label: <span>Profile</span>,
           icon: <EyeOutlined />,
-          key: '/user-info',
+          key: routeNames.User,
         },
         {
           label: <span>Edit User</span>,
           icon: <EditOutlined />,
           key: '/user-info/update',
-        },
-        {
-          label: <span>Change Password</span>,
-          icon: <LockOutlined />,
-          key: '/user-info/change-password',
         },
         {
           label: <span>Sign Out</span>,
