@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "start:dev": "env-cmd -f ./env/.env.dev vite",
+    "start:prod": "env-cmd -f ./env/.env.prod vite",
+    "build:dev": "env-cmd -f ./env/.env.dev vite build",
+    "build:prod": "env-cmd -f ./env/.env.prod vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
