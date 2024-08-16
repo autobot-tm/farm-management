@@ -19,9 +19,5 @@ export const routePaths = {
       path: routeNames.User,
       element: <UserProfile />,
     },
-    {
-      path: routeNames.EditProfile,
-      element: <UserProfile />,
-    },
   ],
 }

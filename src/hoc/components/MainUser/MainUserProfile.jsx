@@ -52,11 +52,6 @@ const MainUser = () => {
           key: routeNames.User,
         },
         {
-          label: <span>Edit User</span>,
-          icon: <EditOutlined />,
-          key: '/user-info/update',
-        },
-        {
           label: <span>Sign Out</span>,
           icon: <LogoutOutlined />,
           key: 'logout',
