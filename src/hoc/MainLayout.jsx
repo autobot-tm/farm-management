@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom'
 import { Layout } from 'antd'
 import './styles.scss'
 import MainSidebar from './components/MainSidebar/MainSidebar'
-import MainHeader from './components/MainHeader/MainHeader'
 const { Content, Footer } = Layout
 
 const MainLayout = () => {
@@ -12,7 +11,6 @@ const MainLayout = () => {
       <Layout className='container-layout'>
         <MainSidebar />
         <Layout>
-          <MainHeader />
           <Content className='container-content-layout'>
             <div className='content-layout'>
               <Outlet />
