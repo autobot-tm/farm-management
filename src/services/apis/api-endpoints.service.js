@@ -1,8 +1,8 @@
 export const ENDPOINTS = {
-    auth: {
-        login: '/api/login'
-    },
-    user: {
-        update: '/api/v1/user/update'
-    }
-}
+  auth: {
+    login: "/api/v1/user/google-login",
+  },
+  user: {
+    update: "/api/v1/user/update",
+  },
+};
