@@ -17,7 +17,7 @@ $button-color: $colors-primary;
   box-shadow: 6px 6px $blur rgba($color, $alpha);
 }
 
-body {
+.signin-page {
   @include center-flex;
   height: 100dvh;
   width: 100dvw;
