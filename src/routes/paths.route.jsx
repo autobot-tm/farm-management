@@ -1,5 +1,6 @@
 import { routeNames } from '../config'
 import Dashboard from '../pages/Dashboard/Dashboard'
+import PlantsPage from '../pages/Plants/PlantsPage'
 import SignIn from '../pages/SignIn/SignIn'
 import UserProfile from '../pages/UserProfile/UserProfile'
 
@@ -18,6 +19,10 @@ export const routePaths = {
     {
       path: routeNames.User,
       element: <UserProfile />,
+    },
+    {
+      path: routeNames.Plants,
+      element: <PlantsPage />,
     },
   ],
 }

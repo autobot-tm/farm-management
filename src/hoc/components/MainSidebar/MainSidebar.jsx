@@ -1,6 +1,6 @@
 import { Layout, Menu } from 'antd'
 import './styles.scss'
-import { DashboardOutlined } from '@ant-design/icons'
+import { DashboardOutlined, UnorderedListOutlined } from '@ant-design/icons'
 const { Sider } = Layout
 import { useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
@@ -13,6 +13,12 @@ const menuItems = [
     path: '/',
     label: 'Dashboard',
     key: 'dashboard',
+  },
+  {
+    icon: <UnorderedListOutlined />,
+    path: '/plants',
+    label: 'Plants',
+    key: 'plants',
   },
 ]
 const MainSidebar = () => {
