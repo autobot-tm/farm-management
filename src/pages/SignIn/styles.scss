@@ -1,26 +1,99 @@
-$primary-color: #407f3e;
-// $second-color:
-// $third
-body {
+@import "../../theme/scss/color.theme.scss";
+
+$primary-bg: rgb(245, 245, 245);
+$card-bg: $colors-primary;
+$button-bg: rgb(250, 250, 250);
+$title-font: "Nunito";
+$title-color: $colors-tertiary;
+$button-color: $colors-primary;
+
+@mixin center-flex {
   display: flex;
-  height: 100dvh;
   justify-content: center;
   align-items: center;
 }
 
-button {
-  color: $primary-color;
-  font-size: 2em;
-  margin: auto;
+@mixin box-shadow($color, $alpha, $blur) {
+  box-shadow: 6px 6px $blur rgba($color, $alpha);
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: auto;
-  height: 700px;
-  width: 700px;
-  border-radius: 20px;
-  background-color: $primary-color;
+body {
+  @include center-flex;
+  height: 100dvh;
+  width: 100dvw;
+  background-color: $primary-bg;
+
+  .card {
+    @include center-flex;
+    justify-content: start;
+    flex-direction: column;
+    position: relative;
+    margin: auto;
+    height: 600px;
+    min-width: 600px;
+    border-radius: 40px;
+    background-color: $card-bg;
+    @include box-shadow(#000000, 0.6, 50px);
+
+    .container-title {
+      position: relative;
+      top: 80px;
+      @include center-flex;
+      flex-direction: column;
+
+      h1 {
+        font-size: 3em;
+        color: $title-color;
+        font-family: $title-font;
+        font-weight: 700;
+        margin: auto;
+        span {
+          // @include box-shadow(#203f1f, 0.5, 24px);
+          text-shadow: 6px 6px 12px rgba(#203f1f, 0.5);
+        }
+      }
+
+      img {
+        position: absolute;
+        top: 90px;
+        width: 150px;
+        height: 150px;
+        margin: auto;
+      }
+    }
+
+    button {
+      position: absolute;
+      bottom: 100px;
+      background-color: $button-bg;
+      font-size: 1.5em;
+      color: $button-color;
+      font-family: $title-font;
+      padding: 20px 10px;
+      min-width: 400px;
+      border: none;
+      border-radius: 20px;
+      @include box-shadow(#203f1f, 0.5, 24px);
+      font-weight: bold;
+      letter-spacing: 2px;
+      @include center-flex;
+      gap: 20px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+
+      svg {
+        width: 28px;
+      }
+
+      &:hover {
+        transform: scale(1.02);
+        @include box-shadow(#203f1f, 0.5, 24px);
+      }
+      &:active {
+        transform: scale(0.98);
+        @include box-shadow(#203f1f, 0, 24px);
+        background-color: darken($button-bg, 5%);
+      }
+    }
+  }
 }
