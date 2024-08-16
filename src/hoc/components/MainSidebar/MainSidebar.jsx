@@ -17,7 +17,14 @@ const menuItems = [
 ]
 const MainSidebar = () => {
   return (
-    <Sider breakpoint='lg' collapsedWidth='0' className='container-sider'>
+    <Sider
+      breakpoint='lg'
+      collapsedWidth='0'
+      className='container-sider'
+      style={{
+        margin: 'auto',
+      }}
+    >
       <Logo />
       <MenuSidebar />
       <MainUser />
