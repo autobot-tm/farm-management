@@ -1,7 +1,8 @@
-import React from 'react'
+import React from "react";
+import "./styles.scss";
 
 const Dashboard = () => {
-  return <div>Dashboard</div>
-}
+  return <div>Dashboard</div>;
+};
 
-export default Dashboard
+export default Dashboard;

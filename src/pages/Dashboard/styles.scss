@@ -1,0 +1,16 @@
+@import "../../theme/scss/color.theme.scss";
+.ant-layout .ant-layout-sider {
+  background-color: $colors-primary;
+}
+.ant-menu-dark {
+  background-color: $colors-primary;
+}
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: $colors-secondary;
+}
+.container-layout {
+  overflow: hidden;
+}
+.container-content-layout {
+  overflow: hidden;
+}
