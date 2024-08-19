@@ -5,6 +5,7 @@
   box-sizing: border-box;
 }
 
+html,
 body {
-  font-family: "Nunito", sans-serif, monospace;
+  font-family: sans-serif, monospace !important;
 }

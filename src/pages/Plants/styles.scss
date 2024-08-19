@@ -1,0 +1,77 @@
+@import "../../theme/scss/color.theme.scss";
+
+// Biến toàn cục
+$boder-radius-table: 36px;
+
+// Layout chính của trang
+.plants-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 28px 32px;
+}
+
+// Styling cho tiêu đề và tên cây
+.title-lst-of-plants,
+.plants-name {
+  color: $colors-primary;
+}
+
+// Styling cho container chứa bảng
+.container-table {
+  width: 100%;
+  border-radius: $boder-radius-table;
+  box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+}
+
+// Layout cho phần bộ lọc và tìm kiếm
+.input-filter-plants {
+  display: flex;
+  gap: 16px;
+}
+
+// Styling cho bảng của Ant Design
+.ant-table-wrapper .ant-table-container table > thead > tr:first-child > *:first-child {
+  border-start-start-radius: $boder-radius-table;
+}
+
+.ant-table-wrapper .ant-table-container table > thead > tr:first-child > *:last-child {
+  border-start-end-radius: $boder-radius-table;
+}
+
+.ant-table-thead {
+  border-radius: 0 $boder-radius-table;
+}
+
+.ant-table-wrapper .ant-table {
+  border-top-right-radius: $boder-radius-table;
+  border-top-left-radius: $boder-radius-table;
+}
+
+// Styling cho các nút và input của Ant Design
+.ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover,
+.ant-btn-icon:hover,
+.ant-btn-icon:focus-within {
+  color: $colors-primary;
+  border-color: $colors-primary;
+}
+
+.ant-input-outlined:hover,
+.ant-input-outlined:focus-within,
+.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):hover {
+  border-color: $colors-primary;
+}
+
+// Styling cho pagination của Ant Design
+.ant-pagination .ant-pagination-item-active,
+.ant-pagination .ant-pagination-item-active a {
+  color: $colors-primary;
+  border-color: $colors-primary;
+}
+
+.ant-pagination .ant-pagination-item-active:hover,
+.ant-pagination .ant-pagination-item-active a:hover {
+  color: $colors-secondary;
+  border-color: $colors-secondary;
+}
