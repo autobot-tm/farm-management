@@ -1,7 +1,8 @@
 import React from 'react'
+import PlantsManagerment from '../PlantsManagerment/PlantsManagerment'
 
 const PlantsPage = () => {
-  return <div>PlantsPage</div>
+  return <PlantsManagerment />
 }
 
 export default PlantsPage
