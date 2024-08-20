@@ -8,5 +8,6 @@ export const ENDPOINTS = {
   plants: {
     getByPaginate: "/api/v1/plant/findAll/paginate/",
     getByFilter: "getByFilter/all",
+    getDetail: "/api/v1/plant/findById"
   },
 };

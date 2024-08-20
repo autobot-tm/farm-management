@@ -2,16 +2,14 @@ import { Modal } from 'antd'
 import React from 'react'
 import { createStyles, useTheme } from 'antd-style'
 import './styles.scss'
-import {
-  Caption,
-  Headline,
-  Paragraph,
-  SubHeading,
-} from '../../../../components/Typography'
-import { formatCustomCurrency } from '../../../../utils/number-seperator'
 import { CaretUpOutlined } from '@ant-design/icons'
-import ICON_MAPPING from '../../../../utils/icon-mapping'
-import BaseButton from '../../../../components/Button/BaseButton'
+import BaseButton from '../Button/BaseButton'
+import ICON_MAPPING from '../../utils/icon-mapping'
+import { Caption } from '../Typography/Caption/Caption'
+import { Headline } from '../Typography/Headline/Headline'
+import { Paragraph } from '../Typography/Paragraph/Paragraph'
+import { SubHeading } from '../Typography/SubHeading/SubHeading'
+import { formatCustomCurrency } from '../../utils/number-seperator'
 
 const useStyle = createStyles(({ token }) => ({
   'my-modal-mask': {
@@ -29,7 +27,7 @@ const useStyle = createStyles(({ token }) => ({
 }))
 
 const PlantsDetailModal = ({ isOpen, onClose, id }) => {
-  console.log(isOpen, onClose)
+  console.log(id)
   const { styles } = useStyle()
   const token = useTheme()
   const classNames = {

@@ -95,3 +95,10 @@ $boder-radius-table: 24px;
   color: $colors-secondary;
   border-color: $colors-secondary;
 }
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}

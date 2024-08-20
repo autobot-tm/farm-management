@@ -6,19 +6,19 @@ import {
 import { FilterOutlined } from '@ant-design/icons'
 import { Table, Input, Button, Dropdown, Space, Spin, Alert } from 'antd'
 import './styles.scss'
-// import PlantsManagerment from '../PlantsManagerment/PlantsManagerment'
 import useSWR from 'swr'
+import { useModal } from '../../hooks'
+import PlantsDetailModal from '../../components/PlantsDetail/PlantsDetailModal'
 
 const { Search } = Input
 
-// Component hiển thị bảng với dữ liệu cây trồng
 const PlantsTable = ({
   data,
-  loading,
   handleTableChange,
   pageSize,
   currentPage,
   totalElements,
+  onDetailClick,
 }) => {
   const columns = [
     {
@@ -82,6 +82,13 @@ const PlantsTable = ({
         return false
       },
     },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Button onClick={() => onDetailClick(record.id)}>Detail</Button>
+      ),
+    },
   ]
 
   return (
@@ -89,20 +96,18 @@ const PlantsTable = ({
       <Table
         columns={columns}
         dataSource={data}
-        loading={loading}
         rowKey={(record) => record.id}
         pagination={{
-          current: currentPage + 1, // Adjusting for 1-based index required by antd
+          current: currentPage + 1,
           pageSize: pageSize,
           total: totalElements,
         }}
-        onChange={handleTableChange} // Truyền đúng handleTableChange
+        onChange={handleTableChange}
       />
     </div>
   )
 }
 
-// Component cho bộ lọc và tìm kiếm
 const InputFilterPlants = ({ onFilterData }) => {
   const [selectedFilter, setSelectedFilter] = useState('Filter')
   const [searchText, setSearchText] = useState('')
@@ -178,16 +183,20 @@ const InputFilterPlants = ({ onFilterData }) => {
   )
 }
 
-// Component chính cho trang Plants
 const PlantsPage = () => {
   const [filteredData, setFilteredData] = useState([])
-  const [currentPage, setCurrentPage] = useState(0) // Start at 0 since page_no starts at 0
-  const [pageSize, setPageSize] = useState(10) // Default page size
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageSize, setPageSize] = useState(10)
+  const [selectedPlantId, setSelectedPlantId] = useState(null)
+  const { isModalVisible, openModal, closeModal } = useModal()
+  const handleDetailClick = (id) => {
+    setSelectedPlantId(id)
+    openModal()
+  }
 
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current - 1) // Adjusting for 0-based index
     setPageSize(pagination.pageSize)
-    console.log('hi')
   }
 
   const fetchData = async ({ pageSize, pageNo }) => {
@@ -207,7 +216,11 @@ const PlantsPage = () => {
     fetchData({ pageSize, pageNo: currentPage })
   )
   if (isLoading) {
-    return <Spin />
+    return (
+      <div className='loading-container'>
+        <Spin />
+      </div>
+    )
   }
 
   if (error) {
@@ -223,15 +236,21 @@ const PlantsPage = () => {
 
   return (
     <div className='plants-page'>
-      <h1 className='title-lst-of-plants'>List of Plants</h1>
+      {isModalVisible && (
+        <PlantsDetailModal
+          isOpen={isModalVisible}
+          onClose={closeModal}
+          id={selectedPlantId}
+        />
+      )}
       <InputFilterPlants onFilterData={setFilteredData} />
       <PlantsTable
-        data={filteredData.length > 0 ? filteredData : plants.results}
-        loading={isLoading}
+        data={filteredData?.length > 0 ? filteredData : plants?.results}
         currentPage={currentPage}
         pageSize={pageSize}
         totalElements={plants?.total_pages * plants?.page_size}
         handleTableChange={handleTableChange}
+        onDetailClick={handleDetailClick}
       />
     </div>
   )
