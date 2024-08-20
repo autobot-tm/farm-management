@@ -1,0 +1,44 @@
+.plant-detail-modal {
+  background-color: #e9e9eb;
+  height: 100%;
+}
+
+.info-plant {
+  display: flex;
+  padding: 20px;
+  width: 100%;
+
+  &-description {
+    width: 70%;
+
+    .price {
+      padding: 10px 0;
+    }
+  }
+
+  &-icon {
+    width: 30%;
+    text-align: center;
+
+    img {
+      height: 100%;
+    }
+  }
+}
+
+.stage-date {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin: 20px 0 20px;
+
+  .stage {
+    width: 25%;
+  }
+
+  .hr {
+    border-right: 1px solid black;
+  }
+}

@@ -17,6 +17,7 @@
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.7",
     "antd": "^5.20.1",
+    "antd-style": "^3.6.2",
     "axios": "^1.7.4",
     "circletype": "^2.3.0",
     "env-cmd": "^10.1.0",

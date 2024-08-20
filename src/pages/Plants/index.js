@@ -1,2 +1,2 @@
 export * from "./PlantsPage";
-export { default as ABC } from "./PlantsCreateBtn";
+export { default as PlantsCreateBtn } from "./PlantsCreateBtn";
