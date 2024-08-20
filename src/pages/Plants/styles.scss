@@ -1,7 +1,7 @@
-@import "../../theme/scss/color.theme.scss";
+@import '../../theme/scss/color.theme.scss';
 
 // Biến toàn cục
-$boder-radius-table: 36px;
+$boder-radius-table: 24px;
 
 // Layout chính của trang
 .plants-page {
@@ -10,6 +10,13 @@ $boder-radius-table: 36px;
   align-items: center;
   gap: 32px;
   padding: 28px 32px;
+
+  .pagination-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
 }
 
 // Styling cho tiêu đề và tên cây
@@ -32,11 +39,21 @@ $boder-radius-table: 36px;
 }
 
 // Styling cho bảng của Ant Design
-.ant-table-wrapper .ant-table-container table > thead > tr:first-child > *:first-child {
+.ant-table-wrapper
+  .ant-table-container
+  table
+  > thead
+  > tr:first-child
+  > *:first-child {
   border-start-start-radius: $boder-radius-table;
 }
 
-.ant-table-wrapper .ant-table-container table > thead > tr:first-child > *:last-child {
+.ant-table-wrapper
+  .ant-table-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
   border-start-end-radius: $boder-radius-table;
 }
 
@@ -59,7 +76,10 @@ $boder-radius-table: 36px;
 
 .ant-input-outlined:hover,
 .ant-input-outlined:focus-within,
-.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary):hover {
+.ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button:not(.ant-btn-primary):hover {
   border-color: $colors-primary;
 }
 

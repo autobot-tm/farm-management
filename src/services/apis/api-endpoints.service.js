@@ -6,7 +6,7 @@ export const ENDPOINTS = {
     update: "/api/v1/user/update",
   },
   plants: {
-    getAll: "https://66b321497fba54a5b7eb894a.mockapi.io/student-managerment/api/v1/students",
+    getByPaginate: "/api/v1/plant/findAll/paginate/",
     getByFilter: "getByFilter/all",
   },
 };

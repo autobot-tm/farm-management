@@ -97,7 +97,7 @@ const Plant = () => {
           </Caption>
           <Headline size={520}>STRAWBERRY</Headline>
           <SubHeading classNames='d-block price'>
-            {formatCustomCurrency(230000)} | 50m²
+            {formatCustomCurrency(230000)}/kg | 50m²
           </SubHeading>
           <Paragraph classNames='color-text-secondary'>
             Lorem ipsum odor amet, consectetuer adipiscing elit. Enim quam ut

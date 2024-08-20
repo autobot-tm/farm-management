@@ -1,19 +1,25 @@
-import React from 'react'
-import PlantsManagerment from '../PlantsManagerment/PlantsManagerment'
-
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   fetchFilteredData,
   getPlantsService,
 } from '../../services/apis/plant.service'
 import { FilterOutlined } from '@ant-design/icons'
-import { Table, Input, Button, Dropdown, Space } from 'antd'
+import { Table, Input, Button, Dropdown, Space, Spin, Alert } from 'antd'
 import './styles.scss'
+// import PlantsManagerment from '../PlantsManagerment/PlantsManagerment'
+import useSWR from 'swr'
 
 const { Search } = Input
 
 // Component hiển thị bảng với dữ liệu cây trồng
-const PlantsTable = ({ data, loading }) => {
+const PlantsTable = ({
+  data,
+  loading,
+  handleTableChange,
+  pageSize,
+  currentPage,
+  totalElements,
+}) => {
   const columns = [
     {
       title: 'Name',
@@ -22,9 +28,21 @@ const PlantsTable = ({ data, loading }) => {
       render: (text) => <span className='plants-name'>{text}</span>,
     },
     {
+      title: 'Type Plant ID',
+      dataIndex: 'type_plant_id',
+      key: 'type_plant_id',
+      filters: [
+        { text: 'Type 1', value: 1 },
+        { text: 'Type 2', value: 2 },
+        { text: 'Type 3', value: 3 },
+      ],
+      onFilter: (value, record) => record.type_plant_id === value,
+    },
+    {
       title: 'Date Planted',
       dataIndex: 'date_planted',
       key: 'date_planted',
+      render: (text) => text || 'Not yet',
     },
     {
       title: 'Area',
@@ -49,8 +67,8 @@ const PlantsTable = ({ data, loading }) => {
     },
     {
       title: 'Price',
-      dataIndex: 'Price',
-      key: 'Price',
+      dataIndex: 'price',
+      key: 'price',
       filters: [
         { text: 'Below 50K', value: 'below50' },
         { text: '50K - 100K', value: '50to100' },
@@ -64,17 +82,6 @@ const PlantsTable = ({ data, loading }) => {
         return false
       },
     },
-    {
-      title: 'Type Plant ID',
-      dataIndex: 'type_plant_id',
-      key: 'type_plant_id',
-      filters: [
-        { text: 'Type 1', value: 1 },
-        { text: 'Type 2', value: 2 },
-        { text: 'Type 3', value: 3 },
-      ],
-      onFilter: (value, record) => record.type_plant_id === value,
-    },
   ]
 
   return (
@@ -84,7 +91,12 @@ const PlantsTable = ({ data, loading }) => {
         dataSource={data}
         loading={loading}
         rowKey={(record) => record.id}
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          current: currentPage + 1, // Adjusting for 1-based index required by antd
+          pageSize: pageSize,
+          total: totalElements,
+        }}
+        onChange={handleTableChange} // Truyền đúng handleTableChange
       />
     </div>
   )
@@ -168,7 +180,61 @@ const InputFilterPlants = ({ onFilterData }) => {
 
 // Component chính cho trang Plants
 const PlantsPage = () => {
-  return <PlantsManagerment />
+  const [filteredData, setFilteredData] = useState([])
+  const [currentPage, setCurrentPage] = useState(0) // Start at 0 since page_no starts at 0
+  const [pageSize, setPageSize] = useState(10) // Default page size
+
+  const handleTableChange = (pagination) => {
+    setCurrentPage(pagination.current - 1) // Adjusting for 0-based index
+    setPageSize(pagination.pageSize)
+    console.log('hi')
+  }
+
+  const fetchData = async ({ pageSize, pageNo }) => {
+    try {
+      const response = await getPlantsService({ pageSize, pageNo })
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
+  const {
+    data: plants,
+    error,
+    isLoading,
+  } = useSWR(`/api/getPlants?page=${currentPage}&size=${pageSize}`, () =>
+    fetchData({ pageSize, pageNo: currentPage })
+  )
+  if (isLoading) {
+    return <Spin />
+  }
+
+  if (error) {
+    return (
+      <Alert
+        message='Error'
+        description='Failed to fetch plants.'
+        type='error'
+        showIcon
+      />
+    )
+  }
+
+  return (
+    <div className='plants-page'>
+      <h1 className='title-lst-of-plants'>List of Plants</h1>
+      <InputFilterPlants onFilterData={setFilteredData} />
+      <PlantsTable
+        data={filteredData.length > 0 ? filteredData : plants.results}
+        loading={isLoading}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        totalElements={plants?.total_pages * plants?.page_size}
+        handleTableChange={handleTableChange}
+      />
+    </div>
+  )
 }
 
 export default PlantsPage
