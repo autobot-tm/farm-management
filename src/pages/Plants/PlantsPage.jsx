@@ -9,6 +9,7 @@ import './styles.scss'
 import useSWR from 'swr'
 import { useModal } from '../../hooks'
 import PlantsDetailModal from '../../components/PlantsDetail/PlantsDetailModal'
+import PlantsCreateBtn from './PlantsCreateBtn'
 
 const { Search } = Input
 
@@ -179,6 +180,7 @@ const InputFilterPlants = ({ onFilterData }) => {
         onSearch={handleSearch}
         style={{ width: 500 }}
       />
+      <PlantsCreateBtn />
     </div>
   )
 }
