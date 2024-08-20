@@ -10,7 +10,7 @@ const customTheme = {
   token: {
     colorPrimary: "#00b96b",
     borderRadius: 12,
-    // colorBgContainer: "#f6ffed",
+    colorBgContainer: "#ffffff20",
     fontFamily: "Nunito",
   },
 };

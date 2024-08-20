@@ -1,0 +1,15 @@
+.input-number,
+.select-farm,
+.select-date {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.select-farm div {
+  flex-grow: 1;
+}
+.select-date div {
+  flex-grow: 1;
+}

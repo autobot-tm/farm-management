@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchFilteredData, getPlantsService } from "../../services/apis/plant.service";
 import { FilterOutlined } from "@ant-design/icons";
 import { Table, Input, Button, Dropdown, Space } from "antd";
+import PlantForm from "../Plants/PlantsCreateBtn";
 import "./styles.scss";
 
 const { Search } = Input;
@@ -138,6 +139,7 @@ const InputFilterPlants = ({ onFilterData }) => {
         </Button>
       </Dropdown>
       <Search placeholder="Search plants" allowClear onSearch={handleSearch} style={{ width: 500 }} />
+      <PlantForm />
     </div>
   );
 };
