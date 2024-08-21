@@ -109,7 +109,7 @@ const PlantsTable = ({
   )
 }
 
-const InputFilterPlants = ({ onFilterData }) => {
+const InputFilterPlants = ({ onFilterData, mutate }) => {
   const [selectedFilter, setSelectedFilter] = useState('Filter')
   const [searchText, setSearchText] = useState('')
 
@@ -180,7 +180,7 @@ const InputFilterPlants = ({ onFilterData }) => {
         onSearch={handleSearch}
         style={{ width: 500 }}
       />
-      <PlantsCreateBtn />
+      <PlantsCreateBtn mutate={mutate} />
     </div>
   )
 }
@@ -214,6 +214,7 @@ const PlantsPage = () => {
     data: plants,
     error,
     isLoading,
+    mutate,
   } = useSWR(`/api/getPlants?page=${currentPage}&size=${pageSize}`, () =>
     fetchData({ pageSize, pageNo: currentPage })
   )
@@ -243,9 +244,10 @@ const PlantsPage = () => {
           isOpen={isModalVisible}
           onClose={closeModal}
           id={selectedPlantId}
+          mutate={mutate}
         />
       )}
-      <InputFilterPlants onFilterData={setFilteredData} />
+      <InputFilterPlants onFilterData={setFilteredData} mutate={mutate} />
       <PlantsTable
         data={filteredData?.length > 0 ? filteredData : plants?.results}
         currentPage={currentPage}

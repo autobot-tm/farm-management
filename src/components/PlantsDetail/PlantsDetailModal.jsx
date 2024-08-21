@@ -1,5 +1,5 @@
-import { Modal } from 'antd'
-import React from 'react'
+import { Modal, notification, Popconfirm } from 'antd'
+import React, { useState } from 'react'
 import { createStyles, useTheme } from 'antd-style'
 import './styles.scss'
 import { CaretUpOutlined } from '@ant-design/icons'
@@ -10,6 +10,8 @@ import { Headline } from '../Typography/Headline/Headline'
 import { Paragraph } from '../Typography/Paragraph/Paragraph'
 import { SubHeading } from '../Typography/SubHeading/SubHeading'
 import { formatCustomCurrency } from '../../utils/number-seperator'
+import PlantForm from '../../pages/Plants/PlantForm'
+import { deletePlant, updatePlant } from '../../services/apis/plant.service'
 
 const useStyle = createStyles(({ token }) => ({
   'my-modal-mask': {
@@ -26,9 +28,11 @@ const useStyle = createStyles(({ token }) => ({
   },
 }))
 
-const PlantsDetailModal = ({ isOpen, onClose, id }) => {
-  console.log(id)
+const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
+  const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { styles } = useStyle()
+  const [api, contextHolder] = notification.useNotification()
   const token = useTheme()
   const classNames = {
     body: styles['my-modal-body'],
@@ -61,9 +65,62 @@ const PlantsDetailModal = ({ isOpen, onClose, id }) => {
       backgroundColor: '#e9e9eb',
     },
   }
-  //   if (!id) return <></>
+  const openNotification = ({ type, message, description }) => {
+    api.open({
+      type,
+      message,
+      description,
+      showProgress: true,
+      pauseOnHover: false,
+    })
+  }
+  const handleEdit = async (values) => {
+    try {
+      setLoading(true)
+      await updatePlant(values)
+      openNotification({
+        type: 'success',
+        message: 'Edit Successful',
+        description: 'You already edit plant successful',
+      })
+      mutate()
+    } catch (error) {
+      openNotification({
+        type: 'error',
+        message: 'Edit Failed',
+        description: 'You failed to edit it.',
+      })
+      console.log(error)
+    } finally {
+      setLoading(false)
+      setVisible(false)
+    }
+  }
+  const handleDelete = async () => {
+    try {
+      await deletePlant({ id })
+      openNotification({
+        type: 'success',
+        message: 'Delete Successful',
+        description: 'You already delete plant successful',
+      })
+      mutate()
+    } catch (error) {
+      openNotification({
+        type: 'error',
+        message: 'Delete Failed',
+        description: 'You failed to delete it.',
+      })
+      console.log(error)
+    } finally {
+      setTimeout(() => {
+        onClose()
+      }, '5000')
+    }
+  }
   return (
     <>
+      {contextHolder}
       <Modal
         title='Plant detail'
         open={isOpen}
@@ -71,13 +128,38 @@ const PlantsDetailModal = ({ isOpen, onClose, id }) => {
         onCancel={onClose}
         width={1200}
         footer={
-          <BaseButton name={'Edit'} backgroundColor='#e68a8c' type={'text'} />
+          <>
+            <BaseButton
+              name={'Edit'}
+              backgroundColor='#e68a8c'
+              type={'text'}
+              onClick={() => setVisible(true)}
+            />
+            <Popconfirm
+              title='Are you sure you want to delete this plant?'
+              onConfirm={handleDelete}
+              okText='Yes'
+              cancelText='No'
+            >
+              <BaseButton
+                name={'Delete'}
+                style={{ color: 'black' }}
+                type={'text'}
+              />
+            </Popconfirm>
+          </>
         }
         classNames={classNames}
         styles={modalStyles}
       >
         <Plant />
       </Modal>
+      <PlantForm
+        visible={visible}
+        onCreate={handleEdit}
+        onCancel={() => setVisible(false)}
+        isLoading={loading}
+      />
     </>
   )
 }
