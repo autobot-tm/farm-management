@@ -1,10 +1,6 @@
 import React, { useContext, useState } from 'react'
-import { Button, ConfigProvider, Space, Input, notification } from 'antd'
-import {
-  EditOutlined,
-  PlusCircleFilled,
-  PlusCircleOutlined,
-} from '@ant-design/icons'
+import { ConfigProvider, Space, Input, notification } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 import { css } from '@emotion/css'
 import PlantForm from './PlantForm'
 import { createPlant } from '../../services/apis/plant.service'
@@ -113,10 +109,8 @@ const PlantsCreateBtn = ({ mutate }) => {
         <Space>
           <BaseButton
             type='primary'
-            // backgroundColor={'#407f3e'}
             onClick={() => setVisible(true)}
             icon={<PlusCircleOutlined />}
-            // name='Create plant'
           >
             Create Plant
           </BaseButton>

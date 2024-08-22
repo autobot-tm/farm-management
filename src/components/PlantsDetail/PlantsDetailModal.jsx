@@ -1,5 +1,5 @@
 import { Modal, notification, Popconfirm } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createStyles, useTheme } from 'antd-style'
 import './styles.scss'
 import { CaretUpOutlined } from '@ant-design/icons'
@@ -11,7 +11,11 @@ import { Paragraph } from '../Typography/Paragraph/Paragraph'
 import { SubHeading } from '../Typography/SubHeading/SubHeading'
 import { formatCustomCurrency } from '../../utils/number-seperator'
 import PlantForm from '../../pages/Plants/PlantForm'
-import { deletePlant, updatePlant } from '../../services/apis/plant.service'
+import {
+  deletePlant,
+  getPlantDetailById,
+  updatePlant,
+} from '../../services/apis/plant.service'
 
 const useStyle = createStyles(({ token }) => ({
   'my-modal-mask': {
@@ -32,6 +36,7 @@ const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const { styles } = useStyle()
+  const [plant, setPlant] = useState(null)
   const [api, contextHolder] = notification.useNotification()
   const token = useTheme()
   const classNames = {
@@ -76,8 +81,10 @@ const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
   }
   const handleEdit = async (values) => {
     try {
+      let params = { ...values, id }
       setLoading(true)
-      await updatePlant(values)
+      await updatePlant(params)
+      handleDetailPlant()
       openNotification({
         type: 'success',
         message: 'Edit Successful',
@@ -118,6 +125,21 @@ const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
       }, '5000')
     }
   }
+  const handleDetailPlant = async () => {
+    try {
+      const response = await getPlantDetailById({ id })
+      setPlant(response.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    if (isOpen) {
+      handleDetailPlant()
+    }
+  }, [isOpen])
+
+  if (!plant) return <></>
   return (
     <>
       {contextHolder}
@@ -152,13 +174,15 @@ const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
         classNames={classNames}
         styles={modalStyles}
       >
-        <Plant />
+        <Plant plant={plant} />
       </Modal>
       <PlantForm
+        id={id}
         visible={visible}
         onCreate={handleEdit}
         onCancel={() => setVisible(false)}
         isLoading={loading}
+        plant={plant}
       />
     </>
   )
@@ -166,44 +190,45 @@ const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
 
 export default PlantsDetailModal
 
-const Plant = () => {
+const Plant = ({ plant }) => {
   return (
     <>
       <div className='info-plant'>
         <section className='info-plant-description'>
           <Caption>
             <CaretUpOutlined style={{ color: 'green' }} />
-            932,8 ngàn tấn
+            {plant.expected_yield} kg
           </Caption>
-          <Headline size={520}>STRAWBERRY</Headline>
+          <Headline size={520}>{plant.name}</Headline>
           <SubHeading classNames='d-block price'>
-            {formatCustomCurrency(230000)}/kg | 50m²
+            {formatCustomCurrency(plant.price)}/kg | {plant.area}m²
           </SubHeading>
           <Paragraph classNames='color-text-secondary'>
-            Lorem ipsum odor amet, consectetuer adipiscing elit. Enim quam ut
-            viverra quisque porttitor sodales. Finibus finibus urna egestas
-            placerat neque, mauris ad accumsan. Litora vestibulum lobortis
-            dictumst eros elit blandit consequat dis nulla?
+            {plant.description}
           </Paragraph>
         </section>
 
         <figure className='info-plant-icon'>
-          <img src={ICON_MAPPING['strawberry_fruit']} alt='dau' />
+          <img src={ICON_MAPPING['strawberry_fruit']} alt='fruit icon' />
         </figure>
       </div>
       <SubHeading>Estimated number of days</SubHeading>
       <section className='stage-date'>
         <SubHeading classNames='stage hr' size={260}>
-          8<Caption classNames='d-block'>developmental</Caption>
+          {plant.seedling_day}
+          <Caption classNames='d-block'>developmental</Caption>
         </SubHeading>
         <SubHeading classNames='stage hr' size={260}>
-          22<Caption classNames='d-block'>vegetative</Caption>
+          {plant.vegetative_stage_day}
+          <Caption classNames='d-block'>vegetative</Caption>
         </SubHeading>
         <SubHeading classNames='stage hr' size={260}>
-          33<Caption classNames='d-block'>flowering</Caption>
+          {plant.flowering_stage_day}
+          <Caption classNames='d-block'>flowering</Caption>
         </SubHeading>
         <SubHeading classNames='stage' size={260}>
-          44<Caption classNames='d-block'>fruiting</Caption>
+          {plant.fruiting_stage_day}
+          <Caption classNames='d-block'>fruiting</Caption>
         </SubHeading>
       </section>
     </>

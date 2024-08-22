@@ -3,7 +3,7 @@ import { Modal, Form, Input, InputNumber, Select } from 'antd'
 import './styleform.scss'
 import { fetchPlantTypeService } from '../../services/apis/plant.service'
 
-const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
+const PlantForm = ({ visible, onCreate, onCancel, isLoading, plant }) => {
   const [form] = Form.useForm()
   const [plantTypes, setPlantTypes] = useState([])
 
@@ -51,20 +51,22 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
       cancelText='Cancel'
       onCancel={onCancel}
       onOk={handleOk}
-      width={570}
+      width={680}
     >
       <Form
         form={form}
         layout='vertical'
         initialValues={{
-          selling_date: null,
-          vegetative_stage_date: null,
-          flowering_stage_date: null,
-          fruiting_stage_date: null,
-          area: null,
-          expected_yield: null,
-          price: null,
-          type_plant_id: null,
+          name: plant?.name || null,
+          description: plant?.description || null,
+          seedling_day: plant?.seedling_day || null,
+          vegetative_stage_day: plant?.vegetative_stage_day || null,
+          flowering_stage_day: plant?.flowering_stage_day || null,
+          fruiting_stage_day: plant?.fruiting_stage_day || null,
+          area: plant?.area || null,
+          expected_yield: plant?.expected_yield || null,
+          price: plant?.price || null,
+          type_plant_id: plant?.type_plant_id || null,
         }}
       >
         <Form.Item
@@ -72,7 +74,10 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
           label='Name'
           rules={[{ required: true, message: 'Please input the name!' }]}
         >
-          <Input placeholder='Enter name&#39;s plant' />
+          <Input
+            placeholder='Enter name&#39;s plant'
+            defaultValue={plant?.name}
+          />
         </Form.Item>
 
         <Form.Item
@@ -83,6 +88,7 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
           <Input.TextArea
             rows={3}
             placeholder='Enter description&#39;s plant'
+            defaultValue={plant?.description}
           />
         </Form.Item>
         <div className='select-date'>
@@ -113,12 +119,17 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
               style={{ width: '100%' }}
               onChange={handleNumberChange}
               placeholder='Select area&#39;s plant'
+              defaultValue={plant?.area}
             />
           </Form.Item>
         </div>
 
         <div className='input-number'>
-          <Form.Item name='selling_day' label='Seedling Phase'>
+          <Form.Item
+            name='seedling_day'
+            label='Seedling Phase'
+            rules={[{ required: true, message: 'Please input seedling!' }]}
+          >
             <InputNumber
               type='number'
               formatter={numberFormatter}
@@ -127,9 +138,14 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
               style={{ width: '100%' }}
               onChange={handleNumberChange}
               placeholder='Enter the number of days'
+              defaultValue={plant?.seedling_day}
             />
           </Form.Item>
-          <Form.Item name='vegetative_stage_day' label='Vegetative Phase'>
+          <Form.Item
+            name='vegetative_stage_day'
+            label='Vegetative Phase'
+            rules={[{ required: true, message: 'Please input vegetative!' }]}
+          >
             <InputNumber
               type='number'
               formatter={numberFormatter}
@@ -138,10 +154,15 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
               style={{ width: '100%' }}
               onChange={handleNumberChange}
               placeholder='Enter the number of days'
+              defaultValue={plant?.vegetative_stage_day}
             />
           </Form.Item>
 
-          <Form.Item name='flowering_stage_day' label='Flowering Phase'>
+          <Form.Item
+            name='flowering_stage_day'
+            label='Flowering Phase'
+            rules={[{ required: true, message: 'Please input flowering!' }]}
+          >
             <InputNumber
               type='number'
               formatter={numberFormatter}
@@ -150,10 +171,15 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
               style={{ width: '100%' }}
               onChange={handleNumberChange}
               placeholder='Enter the number of days'
+              defaultValue={plant?.flowering_stage_day}
             />
           </Form.Item>
 
-          <Form.Item name='fruiting_stage_day' label='Fruiting Phase'>
+          <Form.Item
+            name='fruiting_stage_day'
+            label='Fruiting Phase'
+            rules={[{ required: true, message: 'Please input fruiting!' }]}
+          >
             <InputNumber
               type='number'
               formatter={numberFormatter}
@@ -162,6 +188,7 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
               style={{ width: '100%' }}
               onChange={handleNumberChange}
               placeholder='Enter the number of days'
+              defaultValue={plant?.fruiting_stage_day}
             />
           </Form.Item>
         </div>
@@ -182,6 +209,7 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
               style={{ width: '100%' }}
               onChange={handleNumberChange}
               placeholder='Enter expected yield'
+              defaultValue={plant?.expected_yield}
             />
           </Form.Item>
 
@@ -198,6 +226,7 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading }) => {
               style={{ width: '100%' }}
               onChange={handleNumberChange}
               placeholder='Enter price&#39;s plant'
+              defaultValue={plant?.price}
             />
           </Form.Item>
         </div>

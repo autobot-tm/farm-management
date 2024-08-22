@@ -3,13 +3,13 @@ import {
   fetchFilteredData,
   getPlantsService,
 } from '../../services/apis/plant.service'
-import { FilterOutlined } from '@ant-design/icons'
-import { Table, Input, Button, Dropdown, Space, Spin, Alert } from 'antd'
+import { Table, Input, Button, Spin, Alert } from 'antd'
 import './styles.scss'
 import useSWR from 'swr'
 import { useModal } from '../../hooks'
 import PlantsDetailModal from '../../components/PlantsDetail/PlantsDetailModal'
 import PlantsCreateBtn from './PlantsCreateBtn'
+import { formatCustomCurrency } from '../../utils/number-seperator'
 
 const { Search } = Input
 
@@ -28,17 +28,17 @@ const PlantsTable = ({
       key: 'name',
       render: (text) => <span className='plants-name'>{text}</span>,
     },
-    {
-      title: 'Type Plant ID',
-      dataIndex: 'type_plant_id',
-      key: 'type_plant_id',
-      filters: [
-        { text: 'Type 1', value: 1 },
-        { text: 'Type 2', value: 2 },
-        { text: 'Type 3', value: 3 },
-      ],
-      onFilter: (value, record) => record.type_plant_id === value,
-    },
+    // {
+    //   title: 'Type Plant ID',
+    //   dataIndex: 'type_plant_id',
+    //   key: 'type_plant_id',
+    //   filters: [
+    //     { text: 'Type 1', value: 1 },
+    //     { text: 'Type 2', value: 2 },
+    //     { text: 'Type 3', value: 3 },
+    //   ],
+    //   onFilter: (value, record) => record.type_plant_id === value,
+    // },
     {
       title: 'Date Planted',
       dataIndex: 'date_planted',
@@ -49,17 +49,17 @@ const PlantsTable = ({
       title: 'Area',
       dataIndex: 'area',
       key: 'area',
-      filtes: [
-        { text: 'Small (Below 1m²)', value: 'small' },
-        { text: 'Medium (1 - 5m²)', value: 'medium' },
-        { text: 'Large (Above 5m²)', value: 'large' },
-      ],
-      onFilter: (value, record) => {
-        if (value === 'small') return record.area < 100
-        if (value === 'medium') return record.area >= 100 && record.area <= 500
-        if (value === 'large') return record.area > 500
-        return false
-      },
+      // filtes: [
+      //   { text: 'Small (Below 1m²)', value: 'small' },
+      //   { text: 'Medium (1 - 5m²)', value: 'medium' },
+      //   { text: 'Large (Above 5m²)', value: 'large' },
+      // ],
+      // onFilter: (value, record) => {
+      //   if (value === 'small') return record.area < 100
+      //   if (value === 'medium') return record.area >= 100 && record.area <= 500
+      //   if (value === 'large') return record.area > 500
+      //   return false
+      // },
     },
     {
       title: 'Expected Yield',
@@ -71,17 +71,20 @@ const PlantsTable = ({
       dataIndex: 'price',
       key: 'price',
       filters: [
-        { text: 'Below 50K', value: 'below50' },
-        { text: '50K - 100K', value: '50to100' },
-        { text: 'Above 100K', value: 'above100' },
+        { text: 'Below 500K', value: 'below500' },
+        { text: '500K - 1000K', value: '500to1000' },
+        { text: 'Above 1000K', value: 'above1000' },
       ],
       onFilter: (value, record) => {
-        if (value === 'below50') return record.Price < 50
-        if (value === '50to100')
-          return record.Price >= 50 && record.Price <= 100
-        if (value === 'above100') return record.Price > 100
+        console.log(record.price)
+
+        if (value === 'below500') return record.price < 500
+        if (value === '500to1000')
+          return record.price >= 500 && record.price <= 1000
+        if (value === 'above1000') return record.price > 1000
         return false
       },
+      render: (text) => formatCustomCurrency(text),
     },
     {
       title: 'Actions',
@@ -110,49 +113,14 @@ const PlantsTable = ({
 }
 
 const InputFilterPlants = ({ onFilterData, mutate }) => {
-  const [selectedFilter, setSelectedFilter] = useState('Filter')
   const [searchText, setSearchText] = useState('')
 
-  const filters = [
-    {
-      key: '1',
-      label: <p>1st menu item</p>,
-    },
-    {
-      key: '2',
-      label: <p>2nd menu item</p>,
-    },
-    {
-      key: '3',
-      label: <p>3rd menu item</p>,
-    },
-  ]
-
-  // Xử lý khi chọn bộ lọc
-  const handleFilterClick = async (e) => {
-    const filter = e.domEvent.target.innerText
-    setSelectedFilter(filter)
-
-    try {
-      const response = await fetchFilteredData(
-        filter === 'Filter' ? '' : filter,
-        ''
-      )
-      onFilterData(response.data)
-    } catch (error) {
-      console.error('Error fetching filtered data:', error)
-    }
-  }
-
-  // Xử lý khi tìm kiếm
+  // Handle search input
   const handleSearch = async (value) => {
     setSearchText(value)
 
     try {
-      const response = await fetchFilteredData(
-        searchText,
-        selectedFilter === 'Filter' ? '' : selectedFilter
-      )
+      const response = await fetchFilteredData(value)
       onFilterData(response.data)
     } catch (error) {
       console.error('Error fetching search data:', error)
@@ -161,19 +129,6 @@ const InputFilterPlants = ({ onFilterData, mutate }) => {
 
   return (
     <div className='input-filter-plants'>
-      <Dropdown
-        menu={{
-          items: filters,
-          onClick: handleFilterClick,
-        }}
-      >
-        <Button>
-          <Space>
-            {selectedFilter}
-            <FilterOutlined />
-          </Space>
-        </Button>
-      </Dropdown>
       <Search
         placeholder='Search plants'
         allowClear
@@ -197,7 +152,7 @@ const PlantsPage = () => {
   }
 
   const handleTableChange = (pagination) => {
-    setCurrentPage(pagination.current - 1) // Adjusting for 0-based index
+    setCurrentPage(pagination.current - 1)
     setPageSize(pagination.pageSize)
   }
 
