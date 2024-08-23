@@ -1,5 +1,5 @@
-import { Modal } from 'antd'
-import React from 'react'
+import { Modal, notification, Popconfirm } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { createStyles, useTheme } from 'antd-style'
 import './styles.scss'
 import { CaretUpOutlined } from '@ant-design/icons'
@@ -10,6 +10,12 @@ import { Headline } from '../Typography/Headline/Headline'
 import { Paragraph } from '../Typography/Paragraph/Paragraph'
 import { SubHeading } from '../Typography/SubHeading/SubHeading'
 import { formatCustomCurrency } from '../../utils/number-seperator'
+import PlantForm from '../../pages/Plants/PlantForm'
+import {
+  deletePlant,
+  getPlantDetailById,
+  updatePlant,
+} from '../../services/apis/plant.service'
 
 const useStyle = createStyles(({ token }) => ({
   'my-modal-mask': {
@@ -26,9 +32,12 @@ const useStyle = createStyles(({ token }) => ({
   },
 }))
 
-const PlantsDetailModal = ({ isOpen, onClose, id }) => {
-  console.log(id)
+const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
+  const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { styles } = useStyle()
+  const [plant, setPlant] = useState(null)
+  const [api, contextHolder] = notification.useNotification()
   const token = useTheme()
   const classNames = {
     body: styles['my-modal-body'],
@@ -61,9 +70,79 @@ const PlantsDetailModal = ({ isOpen, onClose, id }) => {
       backgroundColor: '#e9e9eb',
     },
   }
-  //   if (!id) return <></>
+  const openNotification = ({ type, message, description }) => {
+    api.open({
+      type,
+      message,
+      description,
+      showProgress: true,
+      pauseOnHover: false,
+    })
+  }
+  const handleEdit = async (values) => {
+    try {
+      let params = { ...values, id }
+      setLoading(true)
+      await updatePlant(params)
+      handleDetailPlant()
+      openNotification({
+        type: 'success',
+        message: 'Edit Successful',
+        description: 'You already edit plant successful',
+      })
+      mutate()
+    } catch (error) {
+      openNotification({
+        type: 'error',
+        message: 'Edit Failed',
+        description: 'You failed to edit it.',
+      })
+      console.log(error)
+    } finally {
+      setLoading(false)
+      setVisible(false)
+    }
+  }
+  const handleDelete = async () => {
+    try {
+      await deletePlant({ id })
+      openNotification({
+        type: 'success',
+        message: 'Delete Successful',
+        description: 'You already delete plant successful',
+      })
+      mutate()
+    } catch (error) {
+      openNotification({
+        type: 'error',
+        message: 'Delete Failed',
+        description: 'You failed to delete it.',
+      })
+      console.log(error)
+    } finally {
+      setTimeout(() => {
+        onClose()
+      }, '5000')
+    }
+  }
+  const handleDetailPlant = async () => {
+    try {
+      const response = await getPlantDetailById({ id })
+      setPlant(response.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    if (isOpen) {
+      handleDetailPlant()
+    }
+  }, [isOpen])
+
+  if (!plant) return <></>
   return (
     <>
+      {contextHolder}
       <Modal
         title='Plant detail'
         open={isOpen}
@@ -71,57 +150,85 @@ const PlantsDetailModal = ({ isOpen, onClose, id }) => {
         onCancel={onClose}
         width={1200}
         footer={
-          <BaseButton name={'Edit'} backgroundColor='#e68a8c' type={'text'} />
+          <>
+            <BaseButton
+              name={'Edit'}
+              backgroundColor='#e68a8c'
+              type={'text'}
+              onClick={() => setVisible(true)}
+            />
+            <Popconfirm
+              title='Are you sure you want to delete this plant?'
+              onConfirm={handleDelete}
+              okText='Yes'
+              cancelText='No'
+            >
+              <BaseButton
+                name={'Delete'}
+                style={{ color: 'black' }}
+                type={'text'}
+              />
+            </Popconfirm>
+          </>
         }
         classNames={classNames}
         styles={modalStyles}
       >
-        <Plant />
+        <Plant plant={plant} />
       </Modal>
+      <PlantForm
+        id={id}
+        visible={visible}
+        onCreate={handleEdit}
+        onCancel={() => setVisible(false)}
+        isLoading={loading}
+        plant={plant}
+      />
     </>
   )
 }
 
 export default PlantsDetailModal
 
-const Plant = () => {
+const Plant = ({ plant }) => {
   return (
     <>
       <div className='info-plant'>
         <section className='info-plant-description'>
           <Caption>
             <CaretUpOutlined style={{ color: 'green' }} />
-            932,8 ngàn tấn
+            {plant.expected_yield} kg
           </Caption>
-          <Headline size={520}>STRAWBERRY</Headline>
+          <Headline size={520}>{plant.name}</Headline>
           <SubHeading classNames='d-block price'>
-            {formatCustomCurrency(230000)}/kg | 50m²
+            {formatCustomCurrency(plant.price)}/kg | {plant.area}m²
           </SubHeading>
           <Paragraph classNames='color-text-secondary'>
-            Lorem ipsum odor amet, consectetuer adipiscing elit. Enim quam ut
-            viverra quisque porttitor sodales. Finibus finibus urna egestas
-            placerat neque, mauris ad accumsan. Litora vestibulum lobortis
-            dictumst eros elit blandit consequat dis nulla?
+            {plant.description}
           </Paragraph>
         </section>
 
         <figure className='info-plant-icon'>
-          <img src={ICON_MAPPING['strawberry_fruit']} alt='dau' />
+          <img src={ICON_MAPPING['strawberry_fruit']} alt='fruit icon' />
         </figure>
       </div>
       <SubHeading>Estimated number of days</SubHeading>
       <section className='stage-date'>
         <SubHeading classNames='stage hr' size={260}>
-          8<Caption classNames='d-block'>developmental</Caption>
+          {plant.seedling_day}
+          <Caption classNames='d-block'>developmental</Caption>
         </SubHeading>
         <SubHeading classNames='stage hr' size={260}>
-          22<Caption classNames='d-block'>vegetative</Caption>
+          {plant.vegetative_stage_day}
+          <Caption classNames='d-block'>vegetative</Caption>
         </SubHeading>
         <SubHeading classNames='stage hr' size={260}>
-          33<Caption classNames='d-block'>flowering</Caption>
+          {plant.flowering_stage_day}
+          <Caption classNames='d-block'>flowering</Caption>
         </SubHeading>
         <SubHeading classNames='stage' size={260}>
-          44<Caption classNames='d-block'>fruiting</Caption>
+          {plant.fruiting_stage_day}
+          <Caption classNames='d-block'>fruiting</Caption>
         </SubHeading>
       </section>
     </>

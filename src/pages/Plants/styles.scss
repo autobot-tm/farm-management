@@ -35,6 +35,8 @@ $boder-radius-table: 24px;
 // Layout cho phần bộ lọc và tìm kiếm
 .input-filter-plants {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 16px;
 }
 

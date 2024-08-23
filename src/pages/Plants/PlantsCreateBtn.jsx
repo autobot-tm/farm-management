@@ -1,21 +1,57 @@
-import React, { useContext, useState } from "react";
-import { Button, ConfigProvider, Space, Input } from "antd";
-import { EditOutlined } from "@ant-design/icons";
-import { css } from "@emotion/css";
-import PlantForm from "./PlantForm"; // Import the PlantForm component
+import React, { useContext, useState } from 'react'
+import { ConfigProvider, Space, Input, notification } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
+import { css } from '@emotion/css'
+import PlantForm from './PlantForm'
+import { createPlant } from '../../services/apis/plant.service'
+import BaseButton from '../../components/Button/BaseButton'
 
-const PlantsCreateBtn = () => {
-  const { getPrefixCls } = useContext(ConfigProvider.ConfigContext);
-  const rootPrefixCls = getPrefixCls();
-  const [visible, setVisible] = useState(false);
+const PlantsCreateBtn = ({ mutate }) => {
+  const { getPrefixCls } = useContext(ConfigProvider.ConfigContext)
+  const rootPrefixCls = getPrefixCls()
+  const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [api, contextHolder] = notification.useNotification()
 
-  const onCreate = (values) => {
-    console.log("Received values of form: ", values);
-    setVisible(false);
-  };
+  const openNotification = ({ type, message, description }) => {
+    api.open({
+      type,
+      message,
+      description,
+      showProgress: true,
+      pauseOnHover: false,
+    })
+  }
+
+  const onCreate = async (values) => {
+    try {
+      setLoading(true)
+      await createPlant(values)
+      openNotification({
+        type: 'success',
+        message: 'Create Successful',
+        description: 'You already create plant successful',
+      })
+      mutate()
+    } catch (error) {
+      openNotification({
+        type: 'error',
+        message: 'Create Failed',
+        description: 'You failed to create it.',
+      })
+      console.log(error)
+    } finally {
+      setLoading(false)
+      setTimeout(() => {
+        setVisible(false)
+      }, '5000')
+    }
+  }
 
   const linearGradientButton = css`
-    &.${rootPrefixCls}-btn-primary:not([disabled]):not(.${rootPrefixCls}-btn-dangerous) {
+    &.${rootPrefixCls}-btn-primary:not([disabled]):not(
+        .${rootPrefixCls}-btn-dangerous
+      ) {
       border-width: 0;
 
       > span {
@@ -23,7 +59,7 @@ const PlantsCreateBtn = () => {
       }
 
       &::before {
-        content: "";
+        content: '';
         background: linear-gradient(50deg, #407f3e, #89b449);
 
         position: absolute;
@@ -37,7 +73,7 @@ const PlantsCreateBtn = () => {
         opacity: 0;
       }
     }
-  `;
+  `
 
   const inputBorderColor = css`
     &.${rootPrefixCls}-input {
@@ -50,32 +86,44 @@ const PlantsCreateBtn = () => {
         box-shadow: 0 0 0 2px rgba(0, 90, 0, 0.2);
       }
     }
-  `;
+  `
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#407f3e",
-        },
-        components: {
-          Button: {
-            className: linearGradientButton,
+    <>
+      {contextHolder}
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: '#407f3e',
           },
-          Input: {
-            className: inputBorderColor,
+          components: {
+            Button: {
+              className: linearGradientButton,
+            },
+            Input: {
+              className: inputBorderColor,
+            },
           },
-        },
-      }}
-    >
-      <Space>
-        <Button type="primary" size="large" onClick={() => setVisible(true)} icon={<EditOutlined />}>
-          Create Plant
-        </Button>
-      </Space>
-      <PlantForm visible={visible} onCreate={onCreate} onCancel={() => setVisible(false)} />
-    </ConfigProvider>
-  );
-};
+        }}
+      >
+        <Space>
+          <BaseButton
+            type='primary'
+            onClick={() => setVisible(true)}
+            icon={<PlusCircleOutlined />}
+          >
+            Create Plant
+          </BaseButton>
+        </Space>
+        <PlantForm
+          visible={visible}
+          onCreate={onCreate}
+          onCancel={() => setVisible(false)}
+          isLoading={loading}
+        />
+      </ConfigProvider>
+    </>
+  )
+}
 
-export default PlantsCreateBtn;
+export default PlantsCreateBtn
