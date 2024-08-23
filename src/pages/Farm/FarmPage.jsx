@@ -122,7 +122,7 @@ const SearchPlantsTag = ({ onFilterData }) => {
   };
 
   return (
-    <div className="input-filter-plants">
+    <div className="input-filter-plants-farm">
       <Search placeholder="Search plants" allowClear onSearch={handleSearch} style={{ width: 500 }} />
       <Dropdown
         menu={{
@@ -178,6 +178,7 @@ const PieChart = () => {
 };
 
 const OpenFarm = ({ visibleOpenFarm, onCancel, number = 1000 }) => {
+  const [visibleOpenHarvestByNumber, setVisibleOpenHarvestByNumber] = useState(false);
   return (
     <Modal className="open-farm-modal" footer={null} open={visibleOpenFarm} onCancel={onCancel}>
       <div className="content-farm-popup">
@@ -227,10 +228,33 @@ const OpenFarm = ({ visibleOpenFarm, onCancel, number = 1000 }) => {
             icon={<FireOutlined />}
           >
             <div className="group-button">
-              <BaseButton className="item-btn-harvest" name={"Harvest"} />
+              <BaseButton
+                className="item-btn-harvest"
+                onClick={() => {
+                  setVisibleOpenHarvestByNumber(true);
+                }}
+                name={"Harvest"}
+              />
               <BaseButton className="item-btn-harvest" name={"Harvest all"} />
             </div>
           </FloatButton.Group>
+          <OpenHarvestNumber visibleOpenHarvestByNumber={visibleOpenHarvestByNumber} onCancel={() => setVisibleOpenHarvestByNumber(false)} />
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+const OpenHarvestNumber = ({ visibleOpenHarvestByNumber, onCancel }) => {
+  return (
+    <Modal className="open-harvest-by-number" footer={null} open={visibleOpenHarvestByNumber} onCancel={onCancel}>
+      <div className="open-harvest-number">
+        <Paragraph>Number of plants you want to harvest</Paragraph>
+        <div>
+          <InputNumber style={{ width: 300 }} min={1} type="number" />
+          <Button style={{ marginLeft: 16 }} onClick={() => {}}>
+            Harvest
+          </Button>
         </div>
       </div>
     </Modal>

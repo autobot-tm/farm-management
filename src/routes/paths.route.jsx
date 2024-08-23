@@ -1,6 +1,7 @@
 import { routeNames } from "../config";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import FarmPage from "../pages/Farm/FarmPage";
+import HarvestPage from "../pages/harvest/HarvestPage";
 import PlantsPage from "../pages/Plants/PlantsPage";
 import SignIn from "../pages/SignIn/SignIn";
 import UserProfile from "../pages/UserProfile/UserProfile";
@@ -28,6 +29,10 @@ export const routePaths = {
     {
       path: routeNames.Farms,
       element: <FarmPage />,
+    },
+    {
+      path: routeNames.Harvests,
+      element: <HarvestPage />,
     },
   ],
 };

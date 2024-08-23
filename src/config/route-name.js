@@ -4,4 +4,5 @@ export const routeNames = {
   User: "/user-profile",
   Plants: "/plants",
   Farms: "/farms",
+  Harvests: "/harvests",
 };

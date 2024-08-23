@@ -1,6 +1,6 @@
 import { Layout, Menu } from "antd";
 import "./styles.scss";
-import { DashboardOutlined, UnorderedListOutlined, BorderInnerOutlined } from "@ant-design/icons";
+import { DashboardOutlined, UnorderedListOutlined, BorderInnerOutlined, DatabaseOutlined } from "@ant-design/icons";
 const { Sider } = Layout;
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -25,6 +25,12 @@ const menuItems = [
     path: "/farms",
     label: "Farm",
     key: "farms",
+  },
+  {
+    icon: <DatabaseOutlined />,
+    path: "/harvests",
+    label: "Harvest",
+    key: "harvests",
   },
 ];
 const MainSidebar = () => {
