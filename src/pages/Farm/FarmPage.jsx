@@ -1,19 +1,18 @@
-import React, { useState, useContext } from "react";
-import { Button, Modal, Form, Input, DatePicker, Select, ConfigProvider, Tag, FloatButton, Dropdown, InputNumber, Divider } from "antd";
-import { SubHeading, Paragraph, Caption, Headline } from "../../components/Typography";
+import React, { useState } from "react";
+import { Button, Modal, Form, Input, Select, Tag, FloatButton, Dropdown, InputNumber, Divider } from "antd";
+import { SubHeading, Paragraph, Headline } from "../../components/Typography";
 import BaseButton from "../../components/Button/BaseButton";
 import { FireOutlined, PlusOutlined } from "@ant-design/icons";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
-import { css } from "@emotion/css";
+import HarvestForm from "../../components/HarvestForm/FormHarver";
 import "./styles.scss";
-ChartJS.register(ArcElement, Tooltip, Legend);
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const { Search } = Input;
-const { Option } = Select;
 
+// Farm Form Component
 const FarmForm = ({ visible, onCreate, onCancel }) => {
   const [form] = Form.useForm();
 
@@ -45,42 +44,26 @@ const FarmForm = ({ visible, onCreate, onCancel }) => {
         <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the name!" }]}>
           <Input />
         </Form.Item>
-
         <Form.Item name="area" label="Area" rules={[{ required: true, message: "Please input the area!" }]}>
           <Input type="number" min={0} />
-        </Form.Item>
-        <div className="section-date-form">
-          <Form.Item name="create_at" label="Created At" rules={[{ required: true, message: "Please select the creation date!" }]}>
-            <DatePicker style={{ width: "100%" }} showTime format="YYYY-MM-DD HH:mm:ss" />
-          </Form.Item>
-
-          <Form.Item name="update_at" label="Updated At" rules={[{ required: true, message: "Please select the update date!" }]}>
-            <DatePicker style={{ width: "100%" }} showTime format="YYYY-MM-DD HH:mm:ss" />
-          </Form.Item>
-        </div>
-        <Form.Item name="status" label="Status" rules={[{ required: true, message: "Please select the status!" }]}>
-          <Select placeholder="Select a status">
-            <Option value="active">Active</Option>
-            <Option value="inactive">Inactive</Option>
-            <Option value="pending">Pending</Option>
-          </Select>
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-const ItemPlant = ({ code }) => {
-  return (
-    <div className="item-plant">
-      <img src="src/assets/icons/icon-pea.png" alt={`Plant ${code}`} /> {/* Add the image source here */}
-      <Tag color="green">{code}</Tag>
-    </div>
-  );
-};
+// Item Plant Component
+const ItemPlant = ({ code }) => (
+  <div className="item-plant">
+    <img src="src/assets/icons/icon-pea.png" alt={`Plant ${code}`} /> {/* Placeholder for plant icon */}
+    <Tag color="green">{code}</Tag>
+  </div>
+);
 
+// Search Plants Tag Component
 const SearchPlantsTag = ({ onFilterData }) => {
   const [searchText, setSearchText] = useState("");
+
   const items = [
     {
       key: "1",
@@ -88,13 +71,14 @@ const SearchPlantsTag = ({ onFilterData }) => {
         <div>
           <Paragraph>Add number of plants</Paragraph>
           <div className="item-dropdown">
-            <InputNumber style={{ width: "90%" }} onClick={["disabled"]} type="number" />
-            <Button style={{ background: "white" }} icon={<PlusOutlined />}></Button>
+            <InputNumber style={{ width: "90%" }} type="number" />
+            <Button style={{ background: "white" }} icon={<PlusOutlined />} />
           </div>
         </div>
       ),
     },
   ];
+
   const items2 = [
     {
       key: "1",
@@ -102,14 +86,16 @@ const SearchPlantsTag = ({ onFilterData }) => {
         <div>
           <Paragraph>Select your plants</Paragraph>
           <div className="item-dropdown">
-            <Select style={{ width: 250 }} onClick={["disabled"]} />
-            <Button style={{ background: "white" }} icon={<PlusOutlined />}></Button>
+            <Select style={{ width: 250 }} />
+            <InputNumber style={{ width: "30%" }} type="number" />
+            <Button style={{ background: "white" }} icon={<PlusOutlined />} />
           </div>
         </div>
       ),
     },
   ];
-  // Xử lý khi tìm kiếm
+
+  // Handle search functionality
   const handleSearch = async (value) => {
     setSearchText(value);
 
@@ -124,31 +110,13 @@ const SearchPlantsTag = ({ onFilterData }) => {
   return (
     <div className="input-filter-plants-farm">
       <Search placeholder="Search plants" allowClear onSearch={handleSearch} style={{ width: 500 }} />
-      <Dropdown
-        menu={{
-          items: items2,
-        }}
-        placement="bottomRight"
-        trigger={["click"]}
-        arrow={{
-          pointAtCenter: false,
-        }}
-      >
-        <Button type="primary" size="large" onClick={() => {}} icon={<PlusOutlined />}>
+      <Dropdown menu={{ items: items2 }} placement="bottomRight" trigger={["click"]} arrow={{ pointAtCenter: false }}>
+        <Button type="primary" size="large" icon={<PlusOutlined />}>
           Add Plant
         </Button>
       </Dropdown>
-      <Dropdown
-        menu={{
-          items,
-        }}
-        placement="bottomRight"
-        trigger={["click"]}
-        arrow={{
-          pointAtCenter: false,
-        }}
-      >
-        <Button type="primary" size="large" onClick={() => {}} icon={<PlusOutlined />}>
+      <Dropdown menu={{ items }} placement="bottomRight" trigger={["click"]} arrow={{ pointAtCenter: false }}>
+        <Button type="primary" size="large" icon={<PlusOutlined />}>
           Add Plant
         </Button>
       </Dropdown>
@@ -156,14 +124,15 @@ const SearchPlantsTag = ({ onFilterData }) => {
   );
 };
 
+// Pie Chart Component
 const PieChart = () => {
   const data = {
-    labels: ["Used land", "Unused"], // 2 trường bạn muốn hiển thị
+    labels: ["Used land", "Unused"], // Data labels
     datasets: [
       {
         label: "Datasets Using Land",
-        data: [300, 150], // Dữ liệu tương ứng với các trường
-        backgroundColor: ["#dbd468", "#e68a8c"], // Màu tương ứng với các trường
+        data: [300, 150], // Corresponding data
+        backgroundColor: ["#dbd468", "#e68a8c"], // Colors for each section
         hoverOffset: 4,
       },
     ],
@@ -177,8 +146,11 @@ const PieChart = () => {
   );
 };
 
+// Open Farm Component
 const OpenFarm = ({ visibleOpenFarm, onCancel, number = 1000 }) => {
   const [visibleOpenHarvestByNumber, setVisibleOpenHarvestByNumber] = useState(false);
+  const [isHarvestNumber, setIsHarvestNumber] = useState(false);
+
   return (
     <Modal className="open-farm-modal" footer={null} open={visibleOpenFarm} onCancel={onCancel}>
       <div className="content-farm-popup">
@@ -206,7 +178,6 @@ const OpenFarm = ({ visibleOpenFarm, onCancel, number = 1000 }) => {
                 65
               </SubHeading>
               <Paragraph>Date harvest: </Paragraph>
-
               <SubHeading size={260} classNames="item-plant-content">
                 30/02/2025
               </SubHeading>
@@ -219,23 +190,24 @@ const OpenFarm = ({ visibleOpenFarm, onCancel, number = 1000 }) => {
               Đang trồng
             </SubHeading>
           </div>
-          <FloatButton.Group
-            trigger="hover"
-            type="primary"
-            style={{
-              insetInlineEnd: 84,
-            }}
-            icon={<FireOutlined />}
-          >
+          <FloatButton.Group trigger="hover" type="primary" style={{ insetInlineEnd: 84 }} icon={<FireOutlined />}>
             <div className="group-button">
               <BaseButton
                 className="item-btn-harvest"
                 onClick={() => {
                   setVisibleOpenHarvestByNumber(true);
+                  setIsHarvestNumber(true);
                 }}
                 name={"Harvest"}
               />
-              <BaseButton className="item-btn-harvest" name={"Harvest all"} />
+              <BaseButton
+                onClick={() => {
+                  setVisibleOpenHarvestByNumber(true);
+                  setIsHarvestNumber(false);
+                }}
+                className="item-btn-harvest"
+                name={"Harvest all"}
+              />
             </div>
           </FloatButton.Group>
           <OpenHarvestNumber visibleOpenHarvestByNumber={visibleOpenHarvestByNumber} onCancel={() => setVisibleOpenHarvestByNumber(false)} />
@@ -245,127 +217,70 @@ const OpenFarm = ({ visibleOpenFarm, onCancel, number = 1000 }) => {
   );
 };
 
-const OpenHarvestNumber = ({ visibleOpenHarvestByNumber, onCancel }) => {
+// Open Harvest Number Component
+const OpenHarvestNumber = ({ visibleOpenHarvestByNumber, onCancel, isHarvestNumber }) => {
   return (
     <Modal className="open-harvest-by-number" footer={null} open={visibleOpenHarvestByNumber} onCancel={onCancel}>
       <div className="open-harvest-number">
-        <Paragraph>Number of plants you want to harvest</Paragraph>
-        <div>
-          <InputNumber style={{ width: 300 }} min={1} type="number" />
-          <Button style={{ marginLeft: 16 }} onClick={() => {}}>
-            Harvest
-          </Button>
-        </div>
+        <Paragraph>Harvest Now</Paragraph>
+        <HarvestForm isHarvestNumber={isHarvestNumber} />
       </div>
     </Modal>
   );
 };
 
+const ItemFarmBtn = ({ title, subTitle, area, onClick }) => {
+  return (
+    <button onClick={onClick} className="item-farm">
+      <div className="img-background">
+        <SubHeading classNames="subheading-img">{title}</SubHeading>
+      </div>
+      <div className="item-content-farm">
+        <div className="sub-heading-content-farms">
+          <SubHeading>{title}</SubHeading>
+          <Paragraph classNames="sub-heading-content-farm">{subTitle}</Paragraph>
+          <Paragraph classNames="sub-heading-content-farm">S: {area}</Paragraph>
+        </div>
+      </div>
+    </button>
+  );
+};
+
+// Main FarmPage Component
 const FarmPage = () => {
   const [visible, setVisible] = useState(false);
   const [visibleOpenFarm, setVisibleOpenFarm] = useState(false);
-  const { getPrefixCls } = useContext(ConfigProvider.ConfigContext);
 
-  const rootPrefixCls = getPrefixCls();
-
-  const linearGradientButton = css`
-    &.${rootPrefixCls}-btn-primary:not([disabled]):not(.${rootPrefixCls}-btn-dangerous) {
-      border-width: 0;
-
-      > span {
-        position: relative;
-      }
-
-      &::before {
-        content: "";
-        background: linear-gradient(50deg, #407f3e, #89b449);
-
-        position: absolute;
-        inset: 0;
-        opacity: 1;
-        transition: all 0.3s;
-        border-radius: inherit;
-      }
-
-      &:hover::before {
-        opacity: 0;
-      }
-    }
-  `;
-
-  const inputBorderColor = css`
-    &.${rootPrefixCls}-input {
-      &:hover {
-        border-color: #407f3e;
-      }
-
-      &:focus {
-        border-color: #407f3e;
-        box-shadow: 0 0 0 2px rgba(0, 90, 0, 0.2);
-      }
-    }
-  `;
-
+  // Handle creation of new farm
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
     setVisible(false);
   };
+
   return (
-    <div className="farm-page">
-      <button
-        onClick={() => {
-          setVisibleOpenFarm(true);
-        }}
-        className="item-farm"
-      >
-        <div className="img-background">
-          <SubHeading classNames="subheading-img">Vườn đào</SubHeading>
-        </div>
-        <div className="item-content-farm">
-          <div className="sub-heading-content-farms">
-            <SubHeading>Vườn đào</SubHeading>
-            <Paragraph classNames="sub-heading-content-farm">Đào Tiên Siêu Giòn</Paragraph>
-            <Paragraph classNames="sub-heading-content-farm">S: 5000ha</Paragraph>
-          </div>
-        </div>
-      </button>
-      <div>
-        {" "}
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: "#407f3e",
-            },
-            components: {
-              Button: {
-                className: linearGradientButton,
-              },
-              Input: {
-                className: inputBorderColor,
-              },
-            },
+    <>
+      <div className="farm-page">
+        <ItemFarmBtn title="Vườn đào" subTitle="Đào Tiên Siêu Giòn" area="5000ha" onClick={() => setVisibleOpenFarm(true)} />
+
+        <Button
+          className="add-button"
+          onClick={() => {
+            setVisible(true);
           }}
         >
-          <Button
-            className="add-button"
-            onClick={() => {
-              setVisible(true);
-            }}
-          >
-            <span className="plus-sign">+</span>
-          </Button>
-          <FarmForm
-            visible={visible}
-            onCreate={onCreate}
-            onCancel={() => {
-              setVisible(false);
-            }}
-            number={10}
-          />
-          <OpenFarm visibleOpenFarm={visibleOpenFarm} onCancel={() => setVisibleOpenFarm(false)} />{" "}
-        </ConfigProvider>
+          <span className="plus-sign">+</span>
+        </Button>
+        <FarmForm
+          visible={visible}
+          onCreate={onCreate}
+          onCancel={() => {
+            setVisible(false);
+          }}
+          number={10}
+        />
+        <OpenFarm visibleOpenFarm={visibleOpenFarm} onCancel={() => setVisibleOpenFarm(false)} />
       </div>
-    </div>
+    </>
   );
 };
 
