@@ -8,9 +8,9 @@ import "./index.css"; // Hoặc import SCSS
 // Định nghĩa theme tùy chỉnh
 const customTheme = {
   token: {
-    colorPrimary: "#00b96b",
+    colorPrimary: "#407f3e",
     borderRadius: 12,
-    colorBgContainer: "#ffffff20",
+    colorBgContainer: "#f8f8f800",
     fontFamily: "Nunito",
   },
 };
