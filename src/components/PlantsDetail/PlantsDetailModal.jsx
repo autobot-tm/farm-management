@@ -209,7 +209,7 @@ const Plant = ({ plant }) => {
         </section>
 
         <figure className='info-plant-icon'>
-          <img src={ICON_MAPPING['strawberry_fruit']} alt='fruit icon' />
+          <img src={ICON_MAPPING[plant.type_plant_id]} alt='fruit icon' />
         </figure>
       </div>
       <SubHeading>Estimated number of days</SubHeading>
