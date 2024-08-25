@@ -19,7 +19,9 @@ export const ENDPOINTS = {
   },
   farm: {
     getAll: "/api/v1/farm/findAll",
-    getDetail: "/api/v1/farm/findById",
+    getDetail: id => `/api/v1/farm/findById/${id}`,
     create: "/api/v1/farm/add",
+    edit: id => `/api/v1/farm/update/${id}`,
+    delete: id => `/api/v1/farm/delete/${id}`
   }
 };

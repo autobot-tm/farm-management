@@ -43,7 +43,13 @@ const PlantsTable = ({
       title: 'Date Planted',
       dataIndex: 'date_planted',
       key: 'date_planted',
-      render: (text) => text || 'Not yet',
+      render: (text) => {
+        if (!text) {
+          return 'Not yet'
+        }
+        const date = new Date(text)
+        return date.toISOString().split('T')[0]
+      },
     },
     {
       title: 'Area',
@@ -63,8 +69,8 @@ const PlantsTable = ({
     },
     {
       title: 'Expected Yield',
-      dataIndex: 'expected_yield',
-      key: 'expected_yield',
+      dataIndex: 'yield',
+      key: 'yield',
     },
     {
       title: 'Price',

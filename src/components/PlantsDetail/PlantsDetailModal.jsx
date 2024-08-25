@@ -197,7 +197,7 @@ const Plant = ({ plant }) => {
         <section className='info-plant-description'>
           <Caption>
             <CaretUpOutlined style={{ color: 'green' }} />
-            {plant.expected_yield} kg
+            {plant.yield} kg
           </Caption>
           <Headline size={520}>{plant.name}</Headline>
           <SubHeading classNames='d-block price'>
