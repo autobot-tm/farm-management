@@ -197,7 +197,7 @@ const Plant = ({ plant }) => {
         <section className='info-plant-description'>
           <Caption>
             <CaretUpOutlined style={{ color: 'green' }} />
-            {plant.expected_yield} kg
+            {plant.yield} kg
           </Caption>
           <Headline size={520}>{plant.name}</Headline>
           <SubHeading classNames='d-block price'>
@@ -209,7 +209,7 @@ const Plant = ({ plant }) => {
         </section>
 
         <figure className='info-plant-icon'>
-          <img src={ICON_MAPPING['strawberry_fruit']} alt='fruit icon' />
+          <img src={ICON_MAPPING[plant.type_plant_id]} alt='fruit icon' />
         </figure>
       </div>
       <SubHeading>Estimated number of days</SubHeading>

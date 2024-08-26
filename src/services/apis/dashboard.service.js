@@ -8,3 +8,7 @@ export const fetchMonthlyPlantAndHarverstSummaryData = () => {
 export const fetchTotalPlantedAreaAllFarm = () => {
   return apiCaller.get(ENDPOINTS.dashboard.getTotalPlantedAreAllFarm);
 };
+
+export const fetchReportDashboard = ({ month, year }) => {
+  return apiCaller.get(ENDPOINTS.dashboard.getReportDashboard, { params: month, year });
+};
