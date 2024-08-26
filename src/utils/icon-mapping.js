@@ -1,7 +1,16 @@
 import STRAWBERRY from '../assets/icons/icons8-fruit-94.png'
+import AVOCADO from '../assets/icons/icons8-avocado-94.png'
+import DURIAN from '../assets/icons/icons8-durian-64.png'
+import WATERLEMON from '../assets/icons/icons8-watermelon-slice-94.png'
+import DRAGON from '../assets/icons/icons8-dragonfruit.png'
 
 const ICON_MAPPING = {
-    strawberry_fruit: STRAWBERRY
+    STR: STRAWBERRY,
+    WAT: WATERLEMON,
+    AVO: AVOCADO,
+    DUR: DURIAN,
+    DRA: DRAGON
+
 }
 
 export default ICON_MAPPING

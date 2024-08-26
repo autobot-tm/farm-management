@@ -1,3 +1,5 @@
+@import '../../../theme/scss/color.theme.scss';
+
 .container-sider {
   position: relative;
   width: 100%;
@@ -29,4 +31,33 @@
 .container-menu {
   padding-top: 50px;
   width: 100%;
+}
+
+.ant-layout .ant-layout-sider-zero-width-trigger {
+  background-color: $colors-primary;
+}
+
+.ant-layout .ant-layout-sider {
+  background-color: $colors-primary;
+  box-shadow: $box-shadow-page;
+  margin: 12px !important;
+  height: 97%;
+  border-radius: $boder-radius-page;
+  // flex: 0 0 220px !important;
+  max-width: 220px !important;
+}
+.ant-menu-dark {
+  background-color: $colors-primary;
+  border-radius: $boder-radius-page;
+}
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: $colors-secondary;
+  box-shadow: 2px 4px 8px #346933;
+}
+.container-layout {
+  overflow: hidden;
+}
+.container-content-layout {
+  overflow: hidden;
+  padding: 0px;
 }

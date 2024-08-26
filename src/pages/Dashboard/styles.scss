@@ -1,28 +1,5 @@
-@import "../../theme/scss/color.theme.scss";
-.ant-layout .ant-layout-sider {
-  background-color: $colors-primary;
-  box-shadow: $box-shadow-page;
-  margin: 12px !important;
-  height: 97%;
-  border-radius: $boder-radius-page;
-  flex: 0 0 220px !important;
-  max-width: 220px !important;
-}
-.ant-menu-dark {
-  background-color: $colors-primary;
-  border-radius: $boder-radius-page;
-}
-.ant-menu-dark .ant-menu-item-selected {
-  background-color: $colors-secondary;
-  box-shadow: 2px 4px 8px #346933;
-}
-.container-layout {
-  overflow: hidden;
-}
-.container-content-layout {
-  overflow: hidden;
-  padding: 0px;
-}
+@import '../../theme/scss/color.theme.scss';
+
 .container-stack-bar,
 .chart-land-used {
   padding: 24px;
@@ -39,7 +16,7 @@
   height: 100%;
   border-radius: 24px;
   padding: 28px 32px;
-  background-color: $colors-bg-page;
+  // background-color: $colors-bg-page;
   display: flex;
   flex-direction: column;
   // align-items: center;

@@ -17,4 +17,14 @@ export const ENDPOINTS = {
   dashboard: {
     getMonthlyPlantAndHarverstSummary: "/api/v1/dashboard/getMoneyDashboard",
   },
+  farm: {
+    getAll: "/api/v1/farm/findAll",
+    getDetail: id => `/api/v1/farm/findById/${id}`,
+    create: "/api/v1/farm/add",
+    edit: id => `/api/v1/farm/update/${id}`,
+    delete: id => `/api/v1/farm/delete/${id}`
+  },
+  harvest: {
+    getAll: '/api/v1/harvest/getAllMoneyAndYieldGroupByDate'
+  }
 };
