@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import CircleType from "circletype";
 import { Paragraph } from "../../components/Typography";
 import { Button } from "antd";
-import { fetchMonthlyPlantAndHarverstSummaryData } from "../../services/apis/dashboard.service";
+import { fetchMonthlyPlantAndHarverstSummaryData, fetchTotalPlantedAreaAllFarm } from "../../services/apis/dashboard.service";
 import "./styles.scss";
+import { ControlOutlined } from "@ant-design/icons";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -79,13 +80,13 @@ const options = {
   barPercentage: 0.7,
 };
 
-const LandUsagePieChart = () => {
+const LandUsagePieChart = ({ usedLand, Unused }) => {
   const data = {
     labels: ["Used land", "Unused"], // Data labels
     datasets: [
       {
         label: "Datasets Using Land",
-        data: [300, 150], // Corresponding data
+        data: [usedLand, Unused], // Corresponding data
         backgroundColor: ["#dbd468", "#e68a8c"], // Colors for each section
         hoverOffset: 4,
       },
@@ -116,6 +117,8 @@ const ExportBtn = () => {
   );
 };
 const Dashboard = () => {
+  const [usedLand, setUsedLand] = useState(0);
+  const [unUsedLand, setUnUsedLand] = useState(0);
   const titleRef = useRef(null);
   useEffect(() => {
     if (titleRef.current) {
@@ -126,23 +129,37 @@ const Dashboard = () => {
   const fetchMonthlyPlantAndHarvestSummary = async () => {
     try {
       const response = await fetchMonthlyPlantAndHarverstSummaryData();
-      console.log(response, "afsd");
+      // console.log(response, "afsd");
     } catch (error) {
-      console.log(error, "dashboard");
+      // console.log(error, "dashboard");
     }
   };
   fetchMonthlyPlantAndHarvestSummary();
 
+  const fetchDataTotalPlantedArea = async () => {
+    try {
+      const response = await fetchTotalPlantedAreaAllFarm();
+      let result = response.data.data;
+      setUsedLand(result.area_planted);
+      const unuserland = result.area - result.area_planted;
+
+      setUnUsedLand(unuserland);
+      return response.data;
+    } catch (error) {
+      console.log(error, "area all plant");
+    }
+  };
+  fetchDataTotalPlantedArea();
   return (
     <div className="dashboard-page">
       <h1 id="title-over-view" ref={titleRef}>
         OverView of Farm
       </h1>
+      <ExportBtn />
       <div className="group-chart">
         <StackedBarChartWithGroups />
-        <LandUsagePieChart />
+        <LandUsagePieChart usedLand={usedLand} unUsed={unUsedLand} />
       </div>
-      <ExportBtn />
     </div>
   );
 };

@@ -15,6 +15,7 @@ export const ENDPOINTS = {
     delete: (id) => `/api/v1/plant/delete/${id}`,
   },
   dashboard: {
-    getMonthlyPlantAndHarverstSummary: "/api/v1/dashboard/getMoneyDashboard",
+    getMonthlyPlantAndHarverstSummary: "api/v1/dashboard/getMoneyDashboard",
+    getTotalPlantedAreAllFarm: "api/v1/farm/totalPlantedAreaAllFarm",
   },
 };
