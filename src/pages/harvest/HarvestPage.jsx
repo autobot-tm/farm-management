@@ -1,56 +1,86 @@
-import React from "react";
-import { Table, Input } from "antd";
-import "./styles.scss";
-const { Search } = Input;
-// Define columns
+import React from 'react'
+import { Table, Input, Spin, Alert } from 'antd'
+import './styles.scss'
+import useSWR from 'swr'
+import { getAllHarvestService } from '../../services/apis/harvest.service'
+import { formatCustomCurrency } from '../../utils/number-seperator'
+const { Search } = Input
+
 const columns = [
   {
-    title: "Plant Name",
-    dataIndex: "plant_name",
-    key: "plant_name",
+    title: 'Date',
+    dataIndex: 'date',
+    key: 'date',
   },
   {
-    title: "Farm Name",
-    dataIndex: "farm_name",
-    key: "farm_name",
+    title: 'Description',
+    dataIndex: 'description',
+    key: 'description',
+    render: (text) => (text ? text : 'N/A'),
   },
   {
-    title: "Description",
-    dataIndex: "description",
-    key: "description",
+    title: 'Total Yield Actual',
+    dataIndex: 'total_yield_actual',
+    key: 'total_yield_actual',
   },
   {
-    title: "Yield Currently",
-    dataIndex: "yield_currently",
-    key: "yield_currently",
+    title: 'Total Money Actual',
+    dataIndex: 'total_money_actual',
+    key: 'total_money_actual',
+    render: (text) => formatCustomCurrency(text),
   },
-  {
-    title: "Price Currently",
-    dataIndex: "price_currently",
-    key: "price_currently",
-  },
-];
+]
 
-const Harvestable = () => {
+const Harvestable = ({ data }) => {
   return (
-    <div className="container-table">
-      <Table
-        columns={columns}
-        pagination={{ pageSize: 10 }} // Pagination settings
-      />
+    <div className='container-table'>
+      <Table dataSource={data} columns={columns} />
     </div>
-  );
-};
+  )
+}
 
 const HarvestPage = () => {
-  return (
-    <div className="harvest-page">
-      <div className="input-filter-plants">
-        <Search placehoder="Search harvest" style={{ width: 500 }} />
-      </div>
-      <Harvestable />
-    </div>
-  );
-};
+  const fetchAllHarvest = async () => {
+    try {
+      const response = await getAllHarvestService()
+      return response.data.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-export default HarvestPage;
+  const {
+    data: harvest,
+    error,
+    isLoading,
+  } = useSWR('/api/getAllHarvest', fetchAllHarvest)
+
+  if (isLoading) {
+    return (
+      <div className='loading-container'>
+        <Spin />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <Alert
+        message='Error'
+        description='Failed to fetch harvest.'
+        type='error'
+        showIcon
+      />
+    )
+  }
+  return (
+    <div className='harvest-page'>
+      <div className='input-filter-plants'>
+        <Search placehoder='Search harvest' style={{ width: 500 }} />
+      </div>
+      <Harvestable data={harvest} />
+    </div>
+  )
+}
+
+export default HarvestPage
