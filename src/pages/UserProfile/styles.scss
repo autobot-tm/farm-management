@@ -1,0 +1,94 @@
+@import '../../theme/scss/color.theme.scss';
+#user-profile-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+
+  .banner-profile {
+    background: url('https://cdn.dribbble.com/userupload/14957966/file/original-328096f73e333674f0fe405555f877b2.png?resize=1504x1128'),
+      no-repeat;
+    height: 280px;
+    width: 100%;
+    text-align: right;
+    padding: 20px;
+
+    .cock {
+      font-weight: 500;
+      color: #f9fdfe;
+    }
+  }
+
+  .user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    padding: 20px 60px;
+    position: absolute;
+    top: 160px;
+    gap: 20px;
+    width: 300px;
+    height: 280px;
+    border-radius: 8px;
+    background-color: #f9fdfe;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+    .avatar {
+      height: 100px;
+      width: 100px;
+      margin-bottom: 16px;
+    }
+
+    .edit-btn {
+      cursor: pointer;
+    }
+  }
+
+  .grass-bg {
+    width: 100%;
+    margin-top: 140px;
+  }
+
+  .user-profile-edit {
+    position: absolute;
+    top: 160px;
+    background-color: #f9fdfe;
+    text-align: right;
+    padding: 40px;
+    width: 440px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+    .strawberry {
+      position: absolute;
+      top: -50px;
+      right: -40px;
+    }
+
+    & > span {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    &-form {
+      text-align: start;
+    }
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      font-size: 20px;
+    }
+
+    .back-btn:hover {
+      cursor: pointer;
+    }
+  }
+}

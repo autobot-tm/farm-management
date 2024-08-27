@@ -1,0 +1,22 @@
+@import '../../../theme/scss/color.theme.scss';
+
+.headline {
+  color: $colors-text;
+  display: block;
+  margin: 0;
+  padding: 0;
+  &-360 {
+    font-size: 36px;
+    line-height: 1.33;
+    // font-weight: 700;
+  }
+  &-520 {
+    font-size: 52px;
+    line-height: 1.31;
+    // font-weight: 700;
+  }
+}
+
+.primary-color {
+  color: $colors-primary;
+}

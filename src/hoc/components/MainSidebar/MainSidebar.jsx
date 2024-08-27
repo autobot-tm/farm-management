@@ -1,10 +1,16 @@
 import { Layout, Menu } from 'antd'
 import './styles.scss'
-import { DashboardOutlined } from '@ant-design/icons'
+import {
+  DashboardOutlined,
+  UnorderedListOutlined,
+  BorderInnerOutlined,
+  DatabaseOutlined,
+} from '@ant-design/icons'
 const { Sider } = Layout
 import { useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-// import LOGO from '../../../assets/images/logo.svg'
+import LOGO from '../../../assets/icons/icons8-avocado-94.png'
+import MainUser from '../MainUser/MainUserProfile'
 
 const menuItems = [
   {
@@ -13,12 +19,38 @@ const menuItems = [
     label: 'Dashboard',
     key: 'dashboard',
   },
+  {
+    icon: <UnorderedListOutlined />,
+    path: '/plants',
+    label: 'Plants',
+    key: 'plants',
+  },
+  {
+    icon: <BorderInnerOutlined />,
+    path: '/farms',
+    label: 'Farm',
+    key: 'farms',
+  },
+  {
+    icon: <DatabaseOutlined />,
+    path: '/harvests',
+    label: 'Harvest',
+    key: 'harvests',
+  },
 ]
 const MainSidebar = () => {
   return (
-    <Sider breakpoint='lg' collapsedWidth='0' className='container-sider'>
+    <Sider
+      breakpoint='lg'
+      collapsedWidth='0'
+      className='container-sider'
+      style={{
+        margin: 'auto',
+      }}
+    >
       <Logo />
       <MenuSidebar />
+      <MainUser />
     </Sider>
   )
 }
@@ -26,7 +58,7 @@ const MainSidebar = () => {
 const Logo = () => {
   return (
     <Link to={'/'} className='container-logo'>
-      {/* <img src={LOGO} alt='logo-img' /> */}
+      <img src={LOGO} alt='logo-icon' />
     </Link>
   )
 }
