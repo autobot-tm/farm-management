@@ -1,5 +1,5 @@
-import { apiCaller } from '../../axios/client'
-import { ENDPOINTS } from './api-endpoints.service'
+import { apiCaller } from "../../axios/client";
+import { ENDPOINTS } from "./api-endpoints.service";
 
 /**
  * Sign in service.
@@ -8,6 +8,10 @@ import { ENDPOINTS } from './api-endpoints.service'
  * @param {string} input. - The password.
  * @returns {Promise} - The promise of the API call.
  */
-export const updateProfileService = ({ }) => {
-    return apiCaller.post(ENDPOINTS.user.update, {})
-}
+export const updateProfileService = (values) => {
+  return apiCaller.put(ENDPOINTS.user.update, values);
+};
+
+export const getUserAdmin = () => {
+  return apiCaller.get(ENDPOINTS.user.getUser);
+};
