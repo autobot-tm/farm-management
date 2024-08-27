@@ -13,4 +13,12 @@ const ICON_MAPPING = {
 
 }
 
-export default ICON_MAPPING
+const TYPE_MAPPING = {
+    Dragonfruit: "DRA",
+    Durian: "DUR",
+    Strawberry: "STR",
+    Watermelon: "WAT",
+    Avocado: "AVO"
+}
+
+export { ICON_MAPPING, TYPE_MAPPING }

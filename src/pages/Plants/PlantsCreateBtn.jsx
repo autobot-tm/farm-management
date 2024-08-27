@@ -37,7 +37,7 @@ const PlantsCreateBtn = ({ mutate }) => {
       openNotification({
         type: 'error',
         message: 'Create Failed',
-        description: 'You failed to create it.',
+        description: error.response.data.message_vn,
       })
       console.log(error)
     } finally {

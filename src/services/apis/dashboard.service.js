@@ -10,5 +10,11 @@ export const fetchTotalPlantedAreaAllFarm = () => {
 };
 
 export const fetchReportDashboard = ({ month, year }) => {
-  return apiCaller.get(ENDPOINTS.dashboard.getReportDashboard, { params: month, year });
+  return apiCaller.get(ENDPOINTS.dashboard.getReportDashboard, {
+    responseType: 'blob',
+    params:
+    {
+      month, year
+    }
+  });
 };

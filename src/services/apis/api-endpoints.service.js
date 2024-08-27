@@ -24,10 +24,16 @@ export const ENDPOINTS = {
     getAll: "/api/v1/farm/findAll",
     getDetail: (id) => `/api/v1/farm/findById/${id}`,
     create: "/api/v1/farm/add",
-    edit: (id) => `/api/v1/farm/update/${id}`,
-    delete: (id) => `/api/v1/farm/delete/${id}`,
+    edit: id => `/api/v1/farm/update/${id}`,
+    delete: id => `/api/v1/farm/delete/${id}`,
+    getPlantByType: '/api/v1/plant/findAllByTypePlantId',
+    updatePlantToFarm: '/api/v1/farm/addPlantToFarmByListPlantId',
+    getAllPlantOnFarmById: id => `/api/v1/plant/findPlantByFarm/${id}`
   },
   harvest: {
-    getAll: "/api/v1/harvest/getAllMoneyAndYieldGroupByDate",
-  },
+    getAll: '/api/v1/harvest/getAllMoneyAndYieldGroupByDate',
+    getDetail: date => `/api/v1/harvest/findAll/${date}`,
+    edit: id => `/api/v1/harvest/update/${id}`,
+    createAll: '/api/v1/harvest/addAll'
+  }
 };

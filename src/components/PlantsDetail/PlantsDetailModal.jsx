@@ -4,7 +4,6 @@ import { createStyles, useTheme } from 'antd-style'
 import './styles.scss'
 import { CaretUpOutlined } from '@ant-design/icons'
 import BaseButton from '../Button/BaseButton'
-import ICON_MAPPING from '../../utils/icon-mapping'
 import { Caption } from '../Typography/Caption/Caption'
 import { Headline } from '../Typography/Headline/Headline'
 import { Paragraph } from '../Typography/Paragraph/Paragraph'
@@ -16,6 +15,7 @@ import {
   getPlantDetailById,
   updatePlant,
 } from '../../services/apis/plant.service'
+import { ICON_MAPPING } from '../../utils/icon-mapping'
 
 const useStyle = createStyles(({ token }) => ({
   'my-modal-mask': {
@@ -95,7 +95,7 @@ const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
       openNotification({
         type: 'error',
         message: 'Edit Failed',
-        description: 'You failed to edit it.',
+        description: error.response.data.message_vn,
       })
       console.log(error)
     } finally {
@@ -116,7 +116,7 @@ const PlantsDetailModal = ({ isOpen, onClose, id, mutate }) => {
       openNotification({
         type: 'error',
         message: 'Delete Failed',
-        description: 'You failed to delete it.',
+        description: error.response.data.message_vn,
       })
       console.log(error)
     } finally {

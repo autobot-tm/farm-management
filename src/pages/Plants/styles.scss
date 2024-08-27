@@ -108,3 +108,7 @@ $boder-radius-table: 24px;
   align-items: center;
   height: 100vh;
 }
+
+.ant-table-wrapper .ant-table-pagination.ant-pagination {
+  margin: 16px !important;
+}

@@ -8,7 +8,6 @@ import {
   Tag,
   FloatButton,
   Dropdown,
-  InputNumber,
   Divider,
   Row,
   Col,
@@ -16,6 +15,7 @@ import {
   Spin,
   Popconfirm,
   notification,
+  Space,
 } from 'antd'
 import {
   SubHeading,
@@ -28,6 +28,7 @@ import {
   FireOutlined,
   PlusOutlined,
   RadiusSettingOutlined,
+  SyncOutlined,
 } from '@ant-design/icons'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Pie } from 'react-chartjs-2'
@@ -37,14 +38,19 @@ import {
   createFarmService,
   deleteFarmService,
   editFarmService,
+  editPlantToFarmService,
   getAllFarmService,
   getFarmByIdService,
+  getPlantsOnFarmByIdService,
+  getPlantsToFarmByType,
 } from '../../services/apis/farm.service'
 import useSWR from 'swr'
+import { ICON_MAPPING, TYPE_MAPPING } from '../../utils/icon-mapping'
+import { createAllHarvestsService } from '../../services/apis/harvest.service'
+import PlantsDetailModal from '../../components/PlantsDetail/PlantsDetailModal'
+import { useModal } from '../../hooks'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
-
-const { Search } = Input
 
 // Farm Form Component
 const FarmForm = ({ visible, onCreate, onCancel, farm, isLoading }) => {
@@ -108,93 +114,166 @@ const FarmForm = ({ visible, onCreate, onCancel, farm, isLoading }) => {
 }
 
 // Item Plant Component
-const ItemPlant = ({ code }) => (
-  <div className='item-plant'>
-    <img src='src/assets/icons/icon-pea.png' alt={`Plant ${code}`} />{' '}
+const ItemPlant = ({ code, type, status, onClick, id }) => (
+  <div className='item-plant' onClick={() => onClick(id)}>
+    <div className='status'>{status}</div>
+    <img src={ICON_MAPPING[type]} alt={`Plant ${code}`} />{' '}
     {/* Placeholder for plant icon */}
     <Tag color='green'>{code}</Tag>
   </div>
 )
 
 // Search Plants Tag Component
-const SearchPlantsTag = ({ onFilterData }) => {
-  const [searchText, setSearchText] = useState('')
+const SearchPlantsTag = ({
+  farmId,
+  mutatePlantOnFarm,
+  mutate,
+  type,
+  handleGetPlants,
+}) => {
+  const [plants, setPlants] = useState([])
+  const [typePlant, setTypePlant] = useState(null)
+  const [checkedPlant, setCheckedPlant] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [api, contextHolder] = notification.useNotification()
 
-  const items = [
+  const openNotification = ({ type, message, description }) => {
+    api.open({
+      type,
+      message,
+      description,
+      showProgress: true,
+      pauseOnHover: false,
+      duration: 2,
+    })
+  }
+
+  const TYPE_PLANT = TYPE_MAPPING[type]
+
+  const opTypePlants = [
     {
-      key: '1',
-      label: (
-        <div>
-          <Paragraph>Add number of plants</Paragraph>
-          <div className='item-dropdown'>
-            <InputNumber style={{ width: '90%' }} type='number' />
-            <Button style={{ background: 'white' }} icon={<PlusOutlined />} />
-          </div>
-        </div>
-      ),
+      value: 'STR',
+      label: 'Strawberry',
+    },
+    {
+      value: 'WAT',
+      label: 'Watermelon',
+    },
+    {
+      value: 'AVO',
+      label: 'Avocado',
+    },
+    {
+      value: 'DUR',
+      label: 'Durian',
+    },
+    {
+      value: 'DRA',
+      label: 'Dragonfruit',
     },
   ]
+
+  const renderPlantByType = async () => {
+    try {
+      const response = await getPlantsToFarmByType({
+        typePlantId: TYPE_PLANT ? TYPE_PLANT : typePlant,
+      })
+      const plantsData = response.data.data.results
+      console.log(plantsData)
+
+      const plantOptions = plantsData?.map((plant) => ({
+        label: plant.name, // The name of the plant
+        value: plant.id, // The ID of the plant
+      }))
+      setPlants(plantsData ? plantOptions : null)
+    } catch (error) {
+      setPlants(error.data)
+      console.log(error)
+    }
+  }
+
+  const handleChange = (value) => {
+    console.log(`selected ${value}`)
+    setCheckedPlant(value)
+  }
+
+  const handleAddPlantToFarm = async () => {
+    try {
+      if (checkedPlant) {
+        setLoading(true)
+        await editPlantToFarmService({
+          farm_id: farmId,
+          plant_id_list: checkedPlant,
+        })
+        mutatePlantOnFarm()
+        handleGetPlants(farmId)
+        // mutate()
+      }
+    } catch (error) {
+      console.log(error)
+      openNotification({
+        type: 'error',
+        message: 'Create Failed',
+        description: error.response.data.message_vn,
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (typePlant || TYPE_PLANT) {
+      renderPlantByType()
+    }
+  }, [typePlant, TYPE_PLANT])
 
   const items2 = [
     {
       key: '1',
       label: (
-        <div>
+        <div onClick={(e) => e.stopPropagation()}>
           <Paragraph>Select your plants</Paragraph>
           <div className='item-dropdown'>
-            <Select style={{ width: 250 }} />
-            <InputNumber style={{ width: '30%' }} type='number' />
-            <Button style={{ background: 'white' }} icon={<PlusOutlined />} />
+            {TYPE_PLANT ? (
+              ''
+            ) : (
+              <Select
+                style={{ width: 250 }}
+                options={opTypePlants}
+                placeholder='Please select type plants'
+                onChange={(e) => setTypePlant(e)}
+              />
+            )}
+
+            <Select
+              mode='multiple'
+              style={{
+                width: 250,
+              }}
+              placeholder='Please select plants'
+              onChange={handleChange}
+              options={plants}
+            />
+            <Button
+              style={{ background: 'white' }}
+              icon={loading ? <SyncOutlined spin /> : <PlusOutlined />}
+              onClick={handleAddPlantToFarm}
+            />
           </div>
         </div>
       ),
     },
   ]
 
-  // Handle search functionality
-  const handleSearch = async (value) => {
-    setSearchText(value)
-
-    try {
-      const response = await fetchFilteredData(
-        searchText,
-        selectedFilter === selectedFilter
-      )
-      onFilterData(response.data)
-    } catch (error) {
-      console.error('Error fetching search data:', error)
-    }
-  }
-
   return (
-    <div className='input-filter-plants-farm'>
-      <Search
-        placeholder='Search plants'
-        allowClear
-        onSearch={handleSearch}
-        style={{ width: 500 }}
-      />
-      <Dropdown
-        menu={{ items: items2 }}
-        placement='bottomRight'
-        trigger={['click']}
-        arrow={{ pointAtCenter: false }}
-      >
-        <Button type='primary' size='large' icon={<PlusOutlined />}>
-          Add Plant
-        </Button>
-      </Dropdown>
-      <Dropdown
-        menu={{ items }}
-        placement='bottomRight'
-        trigger={['click']}
-        arrow={{ pointAtCenter: false }}
-      >
-        <Button type='primary' size='large' icon={<PlusOutlined />}>
-          Add Plant
-        </Button>
-      </Dropdown>
-    </div>
+    <Space direction='vertical' className='input-filter-plants-farm'>
+      {contextHolder}
+      <Space wrap>
+        <Dropdown menu={{ items: items2 }} placement='bottom' arrow>
+          <Button type='primary' size='large' icon={<PlusOutlined />} />
+        </Dropdown>
+      </Space>
+    </Space>
   )
 }
 
@@ -227,7 +306,7 @@ const PieChart = ({ area, areaPlanted }) => {
 const OpenFarm = ({
   visibleOpenFarm,
   onCancel,
-  number = 10,
+  number = 3,
   plantsOnFarm,
   handleGetPlants,
   mutate,
@@ -238,6 +317,10 @@ const OpenFarm = ({
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [api, contextHolder] = notification.useNotification()
+  const [plants, setPlants] = useState([])
+  const [loadingFetch, setLoadingFetch] = useState(false)
+  const { isModalVisible, openModal, closeModal } = useModal()
+  const [selectedPlantId, setSelectedPlantId] = useState(null)
 
   const openNotification = ({ type, message, description }) => {
     api.open({
@@ -269,7 +352,7 @@ const OpenFarm = ({
     } catch (error) {
       openNotification({
         type: 'error',
-        message: 'Edit Successful',
+        message: 'Edit failed',
         description: error.response.data.message_vn,
       })
       console.log(error)
@@ -292,7 +375,7 @@ const OpenFarm = ({
       openNotification({
         type: 'error',
         message: 'Delete Failed',
-        description: 'You failed to delete it.',
+        description: error.response.data.message_vn,
       })
       console.log(error)
     } finally {
@@ -301,11 +384,50 @@ const OpenFarm = ({
     }
   }
 
+  const hanldeShowDetailPlant = (id) => {
+    setSelectedPlantId(id)
+    openModal()
+    console.log(id)
+  }
+
+  const fetchPlantsOnFarmDetail = async () => {
+    try {
+      setLoadingFetch(true)
+      const response = await getPlantsOnFarmByIdService({
+        id: plantsOnFarm?.id,
+      })
+      setPlants(response.data.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoadingFetch(false)
+    }
+  }
+
+  useEffect(() => {
+    if (plantsOnFarm?.id) {
+      fetchPlantsOnFarmDetail()
+    }
+  }, [plantsOnFarm?.id, visibleOpenFarm])
+
+  if (loadingFetch)
+    return (
+      <div className='loading-container'>
+        <Spin />
+      </div>
+    )
+
   if (!plantsOnFarm) return <></>
 
   return (
     <>
       {contextHolder}
+      <PlantsDetailModal
+        isOpen={isModalVisible}
+        onClose={closeModal}
+        id={selectedPlantId}
+        // mutate={fetchPlantsOnFarmDetail}
+      />
       <Modal
         className='open-farm-modal'
         footer={null}
@@ -320,15 +442,30 @@ const OpenFarm = ({
           gutter={[24, 16]}
         >
           <Col md={24} lg={16}>
-            <SearchPlantsTag />
+            <SearchPlantsTag
+              farmId={plantsOnFarm?.id}
+              mutatePlantOnFarm={fetchPlantsOnFarmDetail}
+              handleGetPlants={handleGetPlants}
+              mutate={mutate}
+              type={plantsOnFarm?.type_plant_name}
+            />
             <div className='grid-item-plant'>
-              {[...Array(number)].map((_, index) => (
-                <ItemPlant key={index} code={index} />
+              {plants?.map((item, index) => (
+                <ItemPlant
+                  key={index}
+                  code={index}
+                  type={item?.type_plant_id}
+                  status={item?.status_name}
+                  id={item?.id}
+                  onClick={hanldeShowDetailPlant}
+                />
               ))}
             </div>
           </Col>
           <Col className='detail-plant' md={24} lg={8}>
-            <Headline>{plantsOnFarm.name}</Headline>
+            <Headline style={{ textAlign: 'center' }} strong>
+              {plantsOnFarm.name}
+            </Headline>
             <Divider variant='dashed' style={{ borderColor: '#7cb305' }} dashed>
               Details Farm
             </Divider>
@@ -367,10 +504,11 @@ const OpenFarm = ({
               <div className='group-button'>
                 <BaseButton
                   className='item-btn-harvest'
-                  onClick={() => {
-                    setVisibleOpenHarvestByNumber(true)
-                    setIsHarvestNumber(true)
-                  }}
+                  onClick={() => alert('comming soon')}
+                  // onClick={() => {
+                  //   setVisibleOpenHarvestByNumber(true)
+                  //   setIsHarvestNumber(true)
+                  // }}
                   name={'Harvest'}
                 />
                 <BaseButton
@@ -386,6 +524,8 @@ const OpenFarm = ({
             <OpenHarvestNumber
               visibleOpenHarvestByNumber={visibleOpenHarvestByNumber}
               onCancel={() => setVisibleOpenHarvestByNumber(false)}
+              farmId={plantsOnFarm?.id}
+              handleGetPlants={handleGetPlants}
             />
           </Col>
           <Col lg={24} className='button-container'>
@@ -426,7 +566,49 @@ const OpenHarvestNumber = ({
   visibleOpenHarvestByNumber,
   onCancel,
   isHarvestNumber,
+  farmId,
+  handleGetPlants,
 }) => {
+  const [loading, setLoading] = useState(false)
+  const [api, contextHolder] = notification.useNotification()
+
+  const openNotification = ({ type, message, description }) => {
+    api.open({
+      type,
+      message,
+      description,
+      showProgress: true,
+      pauseOnHover: false,
+      duration: 2,
+    })
+  }
+  const submitForm = async ({ description, yield_actual, price_actual }) => {
+    try {
+      setLoading(true)
+      await createAllHarvestsService({
+        farm_id: farmId,
+        description,
+        yield_actual,
+        price_actual,
+      })
+      handleGetPlants()
+      onCancel()
+      openNotification({
+        type: 'success',
+        message: 'Harvest Successful',
+        description: 'You already harvest successful',
+      })
+    } catch (error) {
+      console.log(error)
+      openNotification({
+        type: 'error',
+        message: 'Harvest Failed',
+        description: error.response.data.message_vn,
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <Modal
       className='open-harvest-by-number'
@@ -434,9 +616,13 @@ const OpenHarvestNumber = ({
       open={visibleOpenHarvestByNumber}
       onCancel={onCancel}
     >
+      {contextHolder}
       <div className='open-harvest-number'>
-        <Paragraph>Harvest Now</Paragraph>
-        <HarvestForm isHarvestNumber={isHarvestNumber} />
+        <HarvestForm
+          isHarvestNumber={isHarvestNumber}
+          onCreate={submitForm}
+          loading={loading}
+        />
       </div>
     </Modal>
   )
@@ -445,7 +631,13 @@ const OpenHarvestNumber = ({
 const ItemFarmBtn = ({ title, area, onClick, status, id }) => {
   return (
     <Col md={24} lg={12}>
-      <button onClick={() => onClick(id)} className='item-farm'>
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          onClick(id)
+        }}
+        className='item-farm'
+      >
         <div className='img-background'>
           <SubHeading classNames='subheading-img' size={260}>
             {status === 'Active' ? 'Hoạt động' : 'Bỏ hoang'}
@@ -530,7 +722,7 @@ const FarmPage = () => {
   return (
     <>
       <Row className='farm-page' gutter={[24, 16]}>
-        {farms.map((item) => (
+        {farms?.map((item) => (
           <Fragment key={item.id}>
             <ItemFarmBtn
               id={item.id}

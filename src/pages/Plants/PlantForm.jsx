@@ -64,7 +64,7 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading, plant }) => {
           flowering_stage_day: plant?.flowering_stage_day || null,
           fruiting_stage_day: plant?.fruiting_stage_day || null,
           area: plant?.area || null,
-          expected_yield: plant?.expected_yield || null,
+          expected_yield: plant?.yield || null,
           price: plant?.price || null,
           type_plant_id: plant?.type_plant_id || null,
         }}
@@ -209,7 +209,7 @@ const PlantForm = ({ visible, onCreate, onCancel, isLoading, plant }) => {
               style={{ width: '100%' }}
               onChange={handleNumberChange}
               placeholder='Enter expected yield'
-              defaultValue={plant?.expected_yield}
+              defaultValue={plant?.yield}
             />
           </Form.Item>
 

@@ -20,3 +20,19 @@ export const editFarmService = ({ id, name, description, status, area }) => {
 export const deleteFarmService = ({ id }) => {
     return apiCaller.delete(ENDPOINTS.farm.delete(id));
 };
+
+export const getPlantsToFarmByType = ({ typePlantId, pageNo = 0, pageSize = 100 }) => {
+    return apiCaller.get(ENDPOINTS.farm.getPlantByType, {
+        params: {
+            typePlantId, pageNo, pageSize
+        }
+    })
+}
+
+export const editPlantToFarmService = ({ farm_id, plant_id_list }) => {
+    return apiCaller.put(ENDPOINTS.farm.updatePlantToFarm, { farm_id, plant_id_list })
+};
+
+export const getPlantsOnFarmByIdService = ({ id }) => {
+    return apiCaller.get(ENDPOINTS.farm.getAllPlantOnFarmById(id));
+};
