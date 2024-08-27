@@ -10,52 +10,6 @@ import { ControlOutlined } from "@ant-design/icons";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const data = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
-  datasets: [
-    //dữ liệu sản lượng dự kiến
-    {
-      label: "Đào Tiên",
-      data: [3000, 2000, 1000, 4000, 1500, 2200, 3100],
-      backgroundColor: "#8884d8",
-      stack: "Group A",
-    },
-    {
-      label: "Mía",
-      data: [2000, 1500, 500, 3200, 1000, 1700, 2600],
-      backgroundColor: "#82eeee",
-      stack: "Group A",
-    },
-    {
-      label: "Đậu Xanh",
-      data: [2000, 1500, 500, 3200, 1000, 1700, 2600],
-      backgroundColor: "#82ca9f",
-      stack: "Group A",
-      borderRadius: "12",
-    },
-
-    // Dữ liệu sản lượng thực tế
-    {
-      label: "Đào Tiên",
-      data: [1000, 3000, 4000, 2000, 2500, 1800, 2700],
-      backgroundColor: "#ffc658",
-      stack: "Group B",
-    },
-    {
-      label: "Mía",
-      data: [1500, 1200, 3400, 2500, 1400, 2900, 3300],
-      backgroundColor: "#ff2365",
-      stack: "Group B",
-    },
-    {
-      label: "Đậu Xanh",
-      data: [1500, 1200, 3400, 2500, 1400, 2900, 3300],
-      backgroundColor: "#ff7908",
-      borderRadius: "12",
-      stack: "Group B",
-    },
-  ],
-};
 const mapData = (rawData) => {
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -293,13 +247,36 @@ const LandUsagePieChart = ({ usedLand, unUsed, totalLand }) => {
 };
 
 const StackedBarChartWithGroups = () => {
-  const dataMapping = mapData(rawData);
+  const [data, setData] = useState(null);
+
+  const handleGetReportMonthly = async () => {
+    try {
+      const response = await fetchMonthlyPlantAndHarverstSummaryData();
+      setData(response.data);
+      console.log(response.data);
+      return response;
+    } catch (error) {
+      console.log(error, "error get monthly_plant_harvest_summary_dtoarray");
+    }
+  };
+
+  useEffect(() => {
+    handleGetReportMonthly();
+  }, []);
+
+  if (!data) {
+    return <div>Loading...</div>; // Display a loading message or spinner while data is being fetched
+  }
+
+  const dataMapping = mapData(data);
+
   return (
     <div className="container-stack-bar">
       <Bar data={dataMapping} options={options} />
     </div>
   );
 };
+
 const disabledDate = (current) => {
   // Kiểm tra nếu năm của ngày hiện tại lớn hơn năm hiện tại thì vô hiệu hóa
   const currentYear = new Date().getFullYear();

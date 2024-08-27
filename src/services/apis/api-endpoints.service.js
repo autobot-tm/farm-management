@@ -3,7 +3,8 @@ export const ENDPOINTS = {
     login: "/api/v1/user/google-login",
   },
   user: {
-    update: "/api/v1/user/update",
+    update: "/api/v1/user/updateInfo/admin",
+    getUser: "/api/v1/user/admin",
   },
   plants: {
     getByPaginate: "/api/v1/plant/findAll/paginate/",
