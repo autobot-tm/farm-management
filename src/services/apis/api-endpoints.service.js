@@ -3,7 +3,8 @@ export const ENDPOINTS = {
     login: "/api/v1/user/google-login",
   },
   user: {
-    update: "/api/v1/user/update",
+    update: "/api/v1/user/updateInfo/admin",
+    getUser: "/api/v1/user/admin",
   },
   plants: {
     getByPaginate: "/api/v1/plant/findAll/paginate/",
@@ -15,11 +16,13 @@ export const ENDPOINTS = {
     delete: (id) => `/api/v1/plant/delete/${id}`,
   },
   dashboard: {
-    getMonthlyPlantAndHarverstSummary: "/api/v1/dashboard/getMoneyDashboard",
+    getMonthlyPlantAndHarverstSummary: "api/v1/dashboard/getMoneyDashboard",
+    getTotalPlantedAreAllFarm: "api/v1/farm/totalPlantedAreaAllFarm",
+    getReportDashboard: "/api/v1/dashboard/getReportDashboard",
   },
   farm: {
     getAll: "/api/v1/farm/findAll",
-    getDetail: id => `/api/v1/farm/findById/${id}`,
+    getDetail: (id) => `/api/v1/farm/findById/${id}`,
     create: "/api/v1/farm/add",
     edit: id => `/api/v1/farm/update/${id}`,
     delete: id => `/api/v1/farm/delete/${id}`,
