@@ -47,6 +47,8 @@ import {
 import useSWR from 'swr'
 import { ICON_MAPPING, TYPE_MAPPING } from '../../utils/icon-mapping'
 import { createAllHarvestsService } from '../../services/apis/harvest.service'
+import PlantsDetailModal from '../../components/PlantsDetail/PlantsDetailModal'
+import { useModal } from '../../hooks'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -112,8 +114,8 @@ const FarmForm = ({ visible, onCreate, onCancel, farm, isLoading }) => {
 }
 
 // Item Plant Component
-const ItemPlant = ({ code, type, status }) => (
-  <div className='item-plant'>
+const ItemPlant = ({ code, type, status, onClick, id }) => (
+  <div className='item-plant' onClick={() => onClick(id)}>
     <div className='status'>{status}</div>
     <img src={ICON_MAPPING[type]} alt={`Plant ${code}`} />{' '}
     {/* Placeholder for plant icon */}
@@ -317,6 +319,8 @@ const OpenFarm = ({
   const [api, contextHolder] = notification.useNotification()
   const [plants, setPlants] = useState([])
   const [loadingFetch, setLoadingFetch] = useState(false)
+  const { isModalVisible, openModal, closeModal } = useModal()
+  const [selectedPlantId, setSelectedPlantId] = useState(null)
 
   const openNotification = ({ type, message, description }) => {
     api.open({
@@ -380,6 +384,12 @@ const OpenFarm = ({
     }
   }
 
+  const hanldeShowDetailPlant = (id) => {
+    setSelectedPlantId(id)
+    openModal()
+    console.log(id)
+  }
+
   const fetchPlantsOnFarmDetail = async () => {
     try {
       setLoadingFetch(true)
@@ -412,6 +422,12 @@ const OpenFarm = ({
   return (
     <>
       {contextHolder}
+      <PlantsDetailModal
+        isOpen={isModalVisible}
+        onClose={closeModal}
+        id={selectedPlantId}
+        // mutate={fetchPlantsOnFarmDetail}
+      />
       <Modal
         className='open-farm-modal'
         footer={null}
@@ -440,6 +456,8 @@ const OpenFarm = ({
                   code={index}
                   type={item?.type_plant_id}
                   status={item?.status_name}
+                  id={item?.id}
+                  onClick={hanldeShowDetailPlant}
                 />
               ))}
             </div>
